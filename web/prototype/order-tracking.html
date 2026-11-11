@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>متابعة الطلب | كاريزما</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&display=swap');
+    :root { --ink:#171717; --muted:#71695f; --paper:#f7f3eb; --card:#fffdf8; --red:#ef3d2f; --yellow:#ffc928; --green:#2f7d58; --line:rgba(23,23,23,.12); }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:radial-gradient(circle at 8% 8%,rgba(255,201,40,.25),transparent 25rem),radial-gradient(circle at 92% 18%,rgba(47,125,88,.16),transparent 24rem),var(--paper); font-family:Cairo,Arial,sans-serif; }
+    .page { width:min(760px,100%); margin:auto; padding:18px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0 24px; }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .mark { width:44px; height:44px; display:grid; place-items:center; color:var(--paper); background:var(--red); border:3px solid var(--ink); border-radius:50%; box-shadow:4px 4px 0 var(--yellow); font-size:22px; font-weight:900; }
+    .brand strong { display:block; font-size:20px; line-height:1; }
+    .brand small { color:var(--muted); font-size:10px; font-weight:800; }
+    .back { padding:9px 13px; color:var(--ink); background:transparent; border:1px solid var(--line); border-radius:11px; font:inherit; font-weight:900; text-decoration:none; }
+    .hero { padding:26px 22px; border:2px solid var(--ink); border-radius:24px; background:var(--card); box-shadow:8px 8px 0 var(--yellow); }
+    .eyebrow { color:var(--green); font-size:12px; font-weight:900; }
+    h1 { margin:5px 0 4px; font-size:clamp(30px,7vw,52px); letter-spacing:-.07em; }
+    .intro { margin:0; color:var(--muted); font-size:13px; font-weight:800; line-height:1.8; }
+    .order-number { display:inline-block; margin:18px 0 22px; padding:8px 12px; color:var(--paper); background:var(--ink); border-radius:9px; font-weight:900; letter-spacing:.08em; }
+    .status-track { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+    .status-step { padding:13px 8px; color:var(--muted); background:#f0ece4; border-radius:12px; text-align:center; font-size:11px; font-weight:900; }
+    .status-step.active { color:var(--paper); background:var(--green); }
+    .status-step.current { outline:3px solid rgba(47,125,88,.2); }
+    .actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:18px; }
+    button { padding:11px 15px; border:0; border-radius:11px; font:inherit; font-weight:900; cursor:pointer; }
+    .primary { color:var(--paper); background:var(--red); }
+    .secondary { color:var(--ink); background:#f0ece4; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
+    .card { padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--card); }
+    .card.green { background:#e8f3e8; border-color:rgba(47,125,88,.24); }
+    .card h2 { margin:0 0 8px; font-size:19px; }
+    .card p { margin:0; color:var(--muted); font-size:12px; font-weight:800; line-height:1.8; }
+    .points { color:var(--red); font-size:28px; font-weight:900; }
+    .points.pending { color:var(--muted); font-size:22px; }
+    .account-box { margin-top:12px; padding-top:12px; border-top:1px dashed rgba(23,23,23,.2); }
+    .account-box[hidden] { display:none; }
+    .account-box label { display:block; margin:7px 0 4px; font-size:11px; font-weight:900; }
+    .account-box input { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:9px; background:#fff; font:inherit; }
+    .account-box button { margin-top:9px; color:var(--paper); background:var(--red); }
+    .account-box small { display:block; margin-top:7px; color:var(--muted); font-size:10px; font-weight:800; line-height:1.6; }
+    .account-name { color:var(--green); font-size:12px; font-weight:900; }
+    .offers { display:grid; gap:8px; margin-top:10px; }
+    .offer { display:flex; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px dashed rgba(23,23,23,.2); font-size:11px; font-weight:800; }
+    .offer b { color:var(--green); white-space:nowrap; }
+    .reward-button { padding:7px 9px; font-size:10px; white-space:nowrap; }
+    .reward-button:disabled { color:var(--muted); background:#e4dfd6; cursor:not-allowed; }
+    .note { margin-top:14px; color:var(--muted); font-size:11px; font-weight:700; line-height:1.7; }
+    @media (max-width:600px) { .status-track,.grid { grid-template-columns:1fr; } .hero { padding:22px 17px; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar"><div class="brand"><div class="mark">ك</div><div><strong>كاريزما</strong><small>متابعة الطلب</small></div></div><div><a class="back" href="support.html">الدعم</a> <a class="back" href="index.html">رجوع للمنيو</a></div></header>
+    <section class="hero">
+      <div class="eyebrow">طلبك في الطريق</div>
+      <h1>تابع طلبك خطوة بخطوة</h1>
+      <p class="intro">هتعرف طلبك وصل لفين من لحظة استلامه لحد ما يبقى جاهز. الحالة دي تجريبية لحد ربط النظام بالمطعم.</p>
+      <span class="order-number" id="orderNumber">CHR-000000</span>
+      <div class="status-track" id="statusTrack">
+        <div class="status-step active current">تم الاستلام</div><div class="status-step">جاري التحضير</div><div class="status-step">جاهز</div><div class="status-step">تم التسليم</div>
+      </div>
+      <div class="actions"><button class="primary" id="advanceOrder">تحديث حالة الطلب</button><a class="back" href="support.html">مشكلة في الطلب؟</a><a class="back" href="index.html">اطلب حاجة تانية</a></div>
+      <p class="note" id="statusNote">تم تسجيل طلبك، والمطبخ هيبدأ التحضير.</p>
+    </section>
+    <section class="grid">
+      <article class="card"><h2>نقاط أثرك</h2><div class="points pending" id="points">0 نقطة معلقة</div><p id="pointsMessage">سجل حسابك علشان نضيف النقاط باسمك وتقدر تستخدمها بعدين.</p><div class="account-box" id="accountBox"><form id="accountForm"><label for="accountName">الاسم</label><input id="accountName" name="name" required autocomplete="name"><label for="accountEmail">البريد الإلكتروني</label><input id="accountEmail" name="email" type="email" required autocomplete="email"><button type="submit">سجل واحفظ نقاطي</button></form><small>في النسخة التجريبية الحساب محفوظ على هذا الجهاز فقط.</small></div></article>
+      <article class="card green"><h2>مكافآت النقاط</h2><div class="offers"><div class="offer"><span>100 نقطة<br><b>توصيل مجاني</b></span><button class="secondary reward-button" data-reward-points="100" data-reward-title="توصيل مجاني">استبدل</button></div><div class="offer"><span>250 نقطة<br><b>إضافة مجانية</b></span><button class="secondary reward-button" data-reward-points="250" data-reward-title="إضافة مجانية">استبدل</button></div><div class="offer"><span>500 نقطة<br><b>وجبة أو بوكس</b></span><button class="secondary reward-button" data-reward-points="500" data-reward-title="وجبة أو بوكس">استبدل</button></div></div><p>المكافآت لها شروط حد أدنى للطلب، ولا تُجمع مع عرض آخر إلا حسب سياسة المطعم.</p></article>
+    </section>
+  </main>
+  <script>
+    const saved = JSON.parse(localStorage.getItem('charisma-last-order') || 'null');
+    let status = saved ? Number(saved.status) || 0 : 0;
+    const labels = ['تم تسجيل طلبك، والمطبخ هيبدأ التحضير.', 'المطبخ بدأ يجهز طلبك.', 'طلبك جاهز للاستلام أو التوصيل.', 'تم تسليم الطلب.'];
+    const number = document.getElementById('orderNumber');
+    const points = document.getElementById('points');
+    const pointsMessage = document.getElementById('pointsMessage');
+    const accountBox = document.getElementById('accountBox');
+    const note = document.getElementById('statusNote');
+    const steps = [...document.querySelectorAll('.status-step')];
+    let account = JSON.parse(localStorage.getItem('charisma-account') || 'null');
+    if (saved) { number.textContent = saved.orderCode || 'CHR-000000'; }
+    if (account) {
+      if (saved && !saved.pointsClaimed) {
+        account.points = Number(account.points || 0) + Number(saved.points || 0);
+        saved.pointsClaimed = true;
+        localStorage.setItem('charisma-account', JSON.stringify(account));
+        localStorage.setItem('charisma-last-order', JSON.stringify(saved));
+      }
+      points.textContent = `${account.points || 0} نقطة في حسابك`;
+      points.classList.remove('pending');
+      pointsMessage.innerHTML = `أهلًا <span class="account-name">${account.name}</span>، نقاطك محفوظة على حسابك.`;
+      accountBox.hidden = true;
+    } else if (saved) {
+      points.textContent = `${saved.points || 0} نقطة معلقة`;
+    }
+    const rewardButtons = [...document.querySelectorAll('.reward-button')];
+    function updateRewards() {
+      const balance = Number(account && account.points || 0);
+      rewardButtons.forEach(button => {
+        const cost = Number(button.dataset.rewardPoints);
+        button.disabled = !account || balance < cost;
+        button.textContent = !account ? 'سجل أولًا' : balance >= cost ? 'استبدل' : `فاضلك ${cost - balance}`;
+      });
+    }
+    rewardButtons.forEach(button => button.addEventListener('click', () => {
+      const cost = Number(button.dataset.rewardPoints);
+      if (!account || Number(account.points || 0) < cost) return;
+      account.points -= cost;
+      account.rewards = Array.isArray(account.rewards) ? account.rewards : [];
+      account.rewards.push({ title: button.dataset.rewardTitle, points: cost, createdAt: new Date().toISOString() });
+      localStorage.setItem('charisma-account', JSON.stringify(account));
+      points.textContent = `${account.points} نقطة في حسابك`;
+      pointsMessage.textContent = `تم تجهيز مكافأة ${button.dataset.rewardTitle} لطلبك القادم.`;
+      updateRewards();
+    }));
+    document.getElementById('accountForm').addEventListener('submit', event => {
+      event.preventDefault();
+      if (!saved) return;
+      const form = new FormData(event.currentTarget);
+      const newAccount = { name: String(form.get('name') || '').trim(), email: String(form.get('email') || '').trim(), points: Number(saved.points || 0) };
+      saved.pointsClaimed = true;
+      localStorage.setItem('charisma-last-order', JSON.stringify(saved));
+      localStorage.setItem('charisma-account', JSON.stringify(newAccount));
+      points.textContent = `${newAccount.points} نقطة في حسابك`;
+      points.classList.remove('pending');
+      pointsMessage.innerHTML = `أهلًا <span class="account-name">${newAccount.name}</span>، نقاطك محفوظة على حسابك.`;
+      accountBox.hidden = true;
+      account = newAccount;
+      updateRewards();
+    });
+    function render() { steps.forEach((step, index) => { step.classList.toggle('active', index <= status); step.classList.toggle('current', index === status); }); note.textContent = labels[status]; }
+    document.getElementById('advanceOrder').addEventListener('click', () => { status = Math.min(status + 1, 3); const next = Object.assign({}, saved || {}, { status }); localStorage.setItem('charisma-last-order', JSON.stringify(next)); render(); });
+    render();
+    updateRewards();
+  </script>
+  <script src="./preview-guard.js"></script>
+</body>
+</html>

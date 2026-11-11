@@ -1,0 +1,13 @@
+{
+  "name": "كاريزما لوب",
+  "short_name": "كاريزما",
+  "description": "اطلب بذكاء وسيب أثر أحسن.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f3eb",
+  "theme_color": "#ef3d2f",
+  "icons": []
+}

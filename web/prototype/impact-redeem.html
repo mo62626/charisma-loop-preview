@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>كود الأثر | كاريزما</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&display=swap');
+    :root { --ink:#171717; --muted:#71695f; --paper:#f7f3eb; --card:#fffdf8; --red:#ef3d2f; --yellow:#ffc928; --green:#2f7d58; --line:rgba(23,23,23,.12); }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:radial-gradient(circle at 8% 8%,rgba(255,201,40,.25),transparent 25rem),radial-gradient(circle at 92% 18%,rgba(47,125,88,.16),transparent 24rem),var(--paper); font-family:Cairo,Arial,sans-serif; }
+    .page { width:min(820px,100%); margin:auto; padding:18px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0 24px; }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .mark { width:44px; height:44px; display:grid; place-items:center; color:var(--paper); background:var(--red); border:3px solid var(--ink); border-radius:50%; box-shadow:4px 4px 0 var(--yellow); font-size:22px; font-weight:900; }
+    .brand strong { display:block; font-size:20px; line-height:1; }
+    .brand small { color:var(--muted); font-size:10px; font-weight:800; }
+    .back { padding:9px 13px; color:var(--ink); background:transparent; border:1px solid var(--line); border-radius:11px; font:inherit; font-weight:900; text-decoration:none; }
+    .hero { padding:26px 22px; border:2px solid var(--ink); border-radius:24px; background:var(--card); box-shadow:8px 8px 0 var(--yellow); }
+    .eyebrow { color:var(--green); font-size:12px; font-weight:900; }
+    h1 { margin:5px 0 5px; font-size:clamp(30px,7vw,52px); letter-spacing:-.07em; }
+    .intro { margin:0; color:var(--muted); font-size:13px; font-weight:800; line-height:1.8; }
+    .code-form { display:flex; gap:8px; margin-top:19px; }
+    .code-form input { flex:1; min-width:0; padding:12px; border:1px solid var(--line); border-radius:11px; background:#fff; font:inherit; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+    button { padding:11px 15px; border:0; border-radius:11px; color:var(--paper); background:var(--red); font:inherit; font-weight:900; cursor:pointer; }
+    .message { min-height:22px; margin-top:10px; color:var(--red); font-size:12px; font-weight:900; }
+    .results { display:none; margin-top:18px; }
+    .results.visible { display:block; }
+    .summary { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; }
+    .metric { padding:15px 11px; border:1px solid var(--line); border-radius:15px; background:#fff6d8; }
+    .metric.green { background:#e8f3e8; border-color:rgba(47,125,88,.24); }
+    .metric strong { display:block; color:var(--green); font-size:24px; line-height:1.1; }
+    .metric span { display:block; margin-top:5px; color:var(--muted); font-size:10px; font-weight:900; line-height:1.5; }
+    .rewards-card { margin-top:12px; padding:18px; border:1px solid rgba(47,125,88,.24); border-radius:18px; background:#e8f3e8; }
+    .rewards-card h2 { margin:0 0 7px; font-size:20px; }
+    .rewards-card p { margin:0; color:var(--muted); font-size:12px; font-weight:800; line-height:1.8; }
+    .reward-list { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+    .reward-item { padding:12px; border-radius:13px; background:var(--card); border:1px solid var(--line); }
+    .reward-item strong { display:block; color:var(--red); font-size:20px; }
+    .reward-item span { display:block; margin-top:4px; color:var(--ink); font-size:11px; font-weight:900; line-height:1.5; }
+    .reward-item small { display:block; margin-top:5px; color:var(--muted); font-size:10px; font-weight:800; }
+    .reward-item button { width:100%; margin-top:9px; padding:8px 9px; font-size:11px; }
+    .reward-item button:disabled { color:var(--muted); background:#eee8dd; cursor:not-allowed; }
+    .explain { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+    .card { padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--card); }
+    .card h2 { margin:0 0 7px; font-size:19px; }
+    .card p { margin:0; color:var(--muted); font-size:12px; font-weight:800; line-height:1.8; }
+    .account-box { margin-top:14px; padding-top:14px; border-top:1px dashed rgba(23,23,23,.2); }
+    .account-box[hidden] { display:none; }
+    .account-box label { display:block; margin:7px 0 4px; font-size:11px; font-weight:900; }
+    .account-box input { width:100%; padding:10px; border:1px solid var(--line); border-radius:9px; background:#fff; font:inherit; }
+    .account-box button { margin-top:9px; }
+    .note { margin-top:14px; color:var(--muted); font-size:10px; font-weight:800; line-height:1.7; }
+    @media (max-width:650px) { .summary,.explain,.reward-list { grid-template-columns:1fr 1fr; } .code-form { flex-direction:column; } }
+    @media (max-width:420px) { .summary { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar"><div class="brand"><div class="mark">ك</div><div><strong>كاريزما</strong><small>كود الأثر من الكيس</small></div></div><a class="back" href="index.html">رجوع للمنيو</a></header>
+    <section class="hero">
+      <div class="eyebrow">امسح QR الموجود على الكيس</div>
+      <h1>اعرف أثرك وخد نقاطك</h1>
+      <p class="intro">اكتب الكود الموجود على إيصالك أو طلبك. هنعرض لك الحساب التقديري للهدر الذي ساعدت في تجنبه، والنقاط التي يمكن إضافتها لحسابك.</p>
+      <form class="code-form" id="codeForm"><input id="impactCode" required maxlength="6" placeholder="مثال: PHD85Z" aria-label="كود الأثر"><button type="submit">احسب أثري</button></form>
+      <div class="message" id="message" role="status"></div>
+      <div class="results" id="results">
+        <div class="summary">
+          <div class="metric green"><strong id="points">0</strong><span>نقطة أثر</span></div>
+          <div class="metric"><strong id="waste">0</strong><span>جرام هدر تم تجنبه تقديريًا</span></div>
+          <div class="metric green"><strong id="packages">0</strong><span>عبوات تغليف تم تقليلها تقديريًا</span></div>
+        </div>
+        <section class="rewards-card">
+          <h2>نقاطك تتحول لمكافآت</h2>
+          <p id="rewardSummary">مش بنحوّل النقاط لفلوس. بتجمعها وتستبدلها بمكافآت مفيدة في طلباتك الجاية.</p>
+          <div class="reward-list">
+            <div class="reward-item"><strong>100</strong><span>توصيل مجاني</span><small>على طلب يحقق الحد الأدنى</small><button type="button" data-reward-points="100" data-reward-title="توصيل مجاني">استبدل</button></div>
+            <div class="reward-item"><strong>250</strong><span>إضافة مجانية</span><small>بطاطس أو مشروب حسب المتاح</small><button type="button" data-reward-points="250" data-reward-title="إضافة مجانية">استبدل</button></div>
+            <div class="reward-item"><strong>500</strong><span>وجبة أو بوكس</span><small>من قائمة المكافآت</small><button type="button" data-reward-points="500" data-reward-title="وجبة أو بوكس">استبدل</button></div>
+          </div>
+        </section>
+        <div class="explain">
+          <article class="card"><h2>إزاي ده يفيد البيئة؟</h2><p id="environment">اختيارك ساعد المطعم يستخدم مكونات متاحة بدل ما تتحول لمخلفات. ده يقلل الموارد المرتبطة بالإنتاج والنقل والتخلص من الطعام.</p><p class="note">عبوات التغليف التي تم تقليلها تعني أن الطلب استخدم تغليفًا أقل أو عبوة قابلة لإعادة الاستخدام. لو الاختيار لا ينطبق، يظهر الرقم صفر، وده معناه إن الطلب لم يقلل التغليف في هذه المرة.</p></article>
+          <article class="card"><h2>إزاي تستفيد من النقاط؟</h2><p id="claimText">كل ما تجمع نقاط أكتر تفتح مكافأة جديدة. سجل حسابك علشان نثبت النقاط باسمك وتقدر تستخدمها في طلباتك الجاية.</p><div class="account-box" id="accountBox"><form id="accountForm"><label for="accountName">الاسم</label><input id="accountName" name="name" required autocomplete="name"><label for="accountEmail">البريد الإلكتروني</label><input id="accountEmail" name="email" type="email" required autocomplete="email"><button type="submit">سجل وأضف النقاط</button></form></div></article>
+        </div>
+        <p class="note">المكافآت في هذا النموذج توضيحية، ويحدد المطعم الأصناف المتاحة والحد الأدنى للطلب وتاريخ انتهاء المكافأة. لا يمكن جمع مكافأتين في نفس الطلب إلا إذا سمحت سياسة المطعم.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const last = JSON.parse(localStorage.getItem('charisma-last-impact-code') || 'null');
+    let account = JSON.parse(localStorage.getItem('charisma-account') || 'null');
+    let record = null;
+    const message = document.getElementById('message');
+    const results = document.getElementById('results');
+    const accountBox = document.getElementById('accountBox');
+    function showRecord() {
+      const waste = Number(String(record.wasteGrams || '0').replace(/[^\d.]/g, '')) || 0;
+      const points = Number(record.points || 0);
+      document.getElementById('points').textContent = points;
+      document.getElementById('waste').textContent = waste;
+      document.getElementById('packages').textContent = record.packagingSaved || 0;
+      results.classList.add('visible');
+      if (account && !record.claimed) {
+        account.points = Number(account.points || 0) + Number(record.points || 0);
+        record.claimed = true;
+        localStorage.setItem('charisma-account', JSON.stringify(account));
+        localStorage.setItem('charisma-last-impact-code', JSON.stringify(record));
+        localStorage.setItem('charisma-last-order', JSON.stringify(Object.assign({}, JSON.parse(localStorage.getItem('charisma-last-order') || '{}'), { pointsClaimed: true })));
+      }
+      if (account || record.claimed) {
+        accountBox.hidden = true;
+        document.getElementById('claimText').textContent = account ? `تمت إضافة النقاط لحساب ${account.name}. احتفظ بالحساب لاستخدامها في المكافآت القادمة.` : 'تمت إضافة النقاط إلى حسابك.';
+      }
+      updateRewards();
+    }
+    function updateRewards() {
+      const balance = Number(account && account.points || 0);
+      document.querySelectorAll('[data-reward-points]').forEach(button => {
+        const cost = Number(button.dataset.rewardPoints);
+        button.disabled = !account || balance < cost;
+        button.textContent = !account ? 'سجل أولًا' : balance >= cost ? 'استبدل' : `فاضلك ${cost - balance}`;
+      });
+      const next = balance >= 500 ? 'فتحت مكافأة الوجبة أو البوكس.' : balance >= 250 ? 'فتحت مكافأة الإضافة المجانية.' : balance >= 100 ? 'فتحت مكافأة التوصيل المجاني.' : `فاضلك ${100 - balance} نقطة لأول مكافأة: توصيل مجاني.`;
+      document.getElementById('rewardSummary').textContent = account ? `${next} رصيدك الحالي: ${balance} نقطة.` : 'سجل حسابك علشان نثبت النقاط ونفتح لك الاستبدال.';
+    }
+    document.querySelectorAll('[data-reward-points]').forEach(button => button.addEventListener('click', () => {
+      if (!account) return;
+      const cost = Number(button.dataset.rewardPoints);
+      if (Number(account.points || 0) < cost) return;
+      account.points -= cost;
+      const reward = { title: button.dataset.rewardTitle, points: cost, createdAt: new Date().toISOString() };
+      account.rewards = Array.isArray(account.rewards) ? account.rewards : [];
+      account.rewards.push(reward);
+      localStorage.setItem('charisma-account', JSON.stringify(account));
+      message.textContent = `تم استبدال ${cost} نقطة في مكافأة: ${reward.title}. اطلب من المطعم تفعيلها على طلبك.`;
+      updateRewards();
+    }));
+    document.getElementById('codeForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const entered = document.getElementById('impactCode').value.trim().toUpperCase();
+      if (!last || entered !== String(last.code || '').toUpperCase()) {
+        message.textContent = 'الكود غير موجود في هذا الجهاز التجريبي. استخدم كود الأثر الظاهر بعد إتمام طلب تجريبي.';
+        results.classList.remove('visible');
+        return;
+      }
+      record = last;
+      message.textContent = 'تم العثور على الكود. دي تفاصيل أثرك التقديرية.';
+      showRecord();
+    });
+    document.getElementById('accountForm').addEventListener('submit', event => {
+      event.preventDefault();
+      if (!record) return;
+      const form = new FormData(event.currentTarget);
+      const newAccount = { name: String(form.get('name') || '').trim(), email: String(form.get('email') || '').trim(), points: Number(record.points || 0) };
+      record.claimed = true;
+      localStorage.setItem('charisma-account', JSON.stringify(newAccount));
+      localStorage.setItem('charisma-last-impact-code', JSON.stringify(record));
+      localStorage.setItem('charisma-last-order', JSON.stringify(Object.assign({}, JSON.parse(localStorage.getItem('charisma-last-order') || '{}'), { pointsClaimed: true })));
+      accountBox.hidden = true;
+      document.getElementById('claimText').textContent = `أهلًا ${newAccount.name}، تمت إضافة ${newAccount.points} نقطة إلى حسابك.`;
+      message.textContent = 'تم تسجيل الحساب وحفظ نقاط الأثر.';
+      account = newAccount;
+      updateRewards();
+    });
+  </script>
+  <script src="./preview-guard.js"></script>
+</body>
+</html>

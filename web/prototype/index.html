@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ef3d2f">
+  <meta name="description" content="كاريزما لوب: اطلب بذكاء وسيب أثر أحسن.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <title>كاريزما لوب | اطلب بذكاء</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Changa:wght@600;700;800&display=swap');
+    :root {
+      --ink: #171717;
+      --muted: #71695f;
+      --paper: #f7f3eb;
+      --card: #fffdf8;
+      --red: #ef3d2f;
+      --yellow: #ffc928;
+      --green: #2f7d58;
+      --line: rgba(23, 23, 23, .12);
+      --shadow: 0 22px 60px rgba(23, 23, 23, .12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%, rgba(255, 201, 40, .25), transparent 25rem),
+        radial-gradient(circle at 92% 18%, rgba(47, 125, 88, .16), transparent 24rem),
+        var(--paper);
+      font-family: Cairo, Arial, sans-serif;
+    }
+    button { border: 0; font: inherit; cursor: pointer; }
+    .app { min-height: 100dvh; overflow: hidden; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 76px;
+      padding: 12px clamp(18px, 5vw, 72px);
+      background: rgba(247, 243, 235, .86);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; }
+    .mark {
+      width: 48px; height: 48px; display: grid; place-items: center;
+      color: var(--paper); background: var(--red); border: 4px solid var(--ink);
+      border-radius: 50%; box-shadow: 5px 5px 0 var(--yellow); transform: rotate(-6deg);
+      font-size: 24px; font-weight: 900;
+    }
+    .brand strong { display: block; font-size: 22px; line-height: 1; }
+    .brand small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; font-weight: 800; }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .support-link { padding: 9px 12px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 11px; font-size: 11px; font-weight: 900; text-decoration: none; }
+    .mode-pill, .cart-button {
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 15px;
+      border-radius: 999px; font-weight: 900;
+    }
+    .mode-pill { color: var(--green); background: rgba(47, 125, 88, .11); }
+    .mode-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); }
+    .cart-button { color: var(--paper); background: var(--ink); }
+    .cart-count { display: grid; place-items: center; min-width: 22px; height: 22px; color: var(--ink); background: var(--yellow); border-radius: 50%; font-size: 12px; }
+    main { width: min(1380px, 100%); margin: auto; padding: 36px clamp(18px, 5vw, 72px) 100px; }
+    .hero {
+      display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(30px, 7vw, 100px);
+      align-items: center; min-height: 570px;
+    }
+    .hero-copy { position: relative; z-index: 2; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 17px;
+      color: var(--green); font-size: 12px; font-weight: 900; letter-spacing: .04em;
+    }
+    .eyebrow > span:first-child { width: 24px; height: 4px; flex: 0 0 24px; border-radius: 99px; background: var(--green); }
+    .eyebrow #heroEyebrow { width: auto; height: auto; background: none; }
+    .hero-title {
+      position: relative;
+      max-width: 760px;
+      margin: 0;
+      padding: 8px 18px 22px 0;
+      font-family: Cairo, Arial, sans-serif;
+      line-height: .92;
+      letter-spacing: -.09em;
+    }
+    .hero-title::before,
+    .hero-title::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .hero-title::before {
+      top: 8px;
+      right: -24px;
+      width: 130px;
+      height: 36px;
+      background: rgba(244, 123, 32, .16);
+      transform: rotate(-8deg);
+    }
+    .hero-title::after {
+      right: -10px;
+      bottom: 4px;
+      width: 210px;
+      height: 18px;
+      background: rgba(47, 125, 88, .18);
+      transform: rotate(3deg);
+    }
+    .hero-title .hungry {
+      display: block;
+      margin-right: 8px;
+      color: #f47b20;
+      font-size: clamp(42px, 6vw, 76px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -.08em;
+      text-shadow: 3px 4px 0 rgba(207, 89, 15, .16);
+    }
+    .hero-title .brand-word {
+      display: block;
+      position: relative;
+      color: #171717;
+      background: none;
+      -webkit-text-fill-color: #171717;
+      font-size: clamp(64px, 10vw, 132px);
+      font-weight: 900;
+      line-height: .95;
+      letter-spacing: -.08em;
+      -webkit-text-stroke: 2px #f47b20;
+      text-shadow:
+        2px 3px 0 #ef3d2f,
+        5px 6px 0 rgba(23, 23, 23, .24);
+      transform: translateX(-8px) rotate(-1deg);
+      filter: drop-shadow(0 5px 0 rgba(255, 255, 255, .42));
+    }
+    .hero-title .brand-word::after { content: none; }
+    .hero-title .impact-line {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+      padding: 7px 18px 9px;
+      color: var(--green);
+      font-size: clamp(26px, 4vw, 48px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.08em;
+      text-shadow: none;
+      transform: rotate(-2deg);
+    }
+    .points-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 11px;
+      color: var(--ink);
+      background: var(--yellow);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      box-shadow: 4px 4px 0 var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      transform: rotate(3deg);
+    }
+    .points-badge strong { font-size: 20px; line-height: 1; }
+    .points-badge small { display: block; color: var(--muted); font-size: 9px; }
+    .hero-title .impact-line .impact-prefix {
+      color: #a52b25;
+      font-weight: 900;
+    }
+    .hero-title .impact-line::before {
+      content: "♻";
+      position: absolute;
+      right: -34px;
+      top: 50%;
+      color: var(--green);
+      font-size: .55em;
+      transform: translateY(-50%) rotate(9deg);
+    }
+    .hero-copy > p { max-width: 470px; margin: 22px 0 27px; color: var(--muted); font-size: 17px; font-weight: 700; line-height: 1.9; }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 10px; }
+    .primary, .secondary { padding: 13px 20px; border-radius: 14px; font-weight: 900; transition: transform .2s ease, box-shadow .2s ease; }
+    .primary { color: var(--paper); background: var(--red); box-shadow: 5px 5px 0 var(--ink); }
+    .secondary { color: var(--ink); background: transparent; border: 1px solid var(--line); }
+    .primary:hover, .secondary:hover { transform: translateY(-2px); }
+    .hero-stage {
+      position: relative; min-height: 510px; display: grid; place-items: center;
+      isolation: isolate;
+    }
+    .orbit {
+      position: absolute; width: min(520px, 92vw); aspect-ratio: 1; border: 1px dashed rgba(23,23,23,.22); border-radius: 50%;
+      transform: rotate(-12deg);
+    }
+    .orbit::before, .orbit::after { content: ""; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--yellow); border: 3px solid var(--ink); }
+    .orbit::before { top: 12%; right: 12%; }
+    .orbit::after { bottom: 10%; left: 15%; background: var(--green); }
+    .hero-card {
+      position: relative; z-index: 2; width: min(420px, 82vw); padding: 20px; border: 2px solid var(--ink);
+      border-radius: 30px; background: var(--card); box-shadow: 14px 14px 0 var(--ink); transform: rotate(4deg);
+    }
+    .hero-image { position: relative; height: 270px; overflow: hidden; border-radius: 22px; background: var(--yellow); }
+    .hero-image img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; opacity: .84; }
+    .ai-badge {
+      position: absolute; top: 14px; right: 14px; display: flex; align-items: center; gap: 6px; padding: 8px 11px;
+      color: var(--paper); background: var(--ink); border-radius: 99px; font-size: 11px; font-weight: 900;
+    }
+    .ai-badge b { color: var(--yellow); }
+    .hero-card-foot { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-top: 16px; }
+    .hero-card-foot h2 { margin: 0; font-size: 24px; }
+    .hero-card-foot p { margin: 4px 0 0; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .impact-score { text-align: left; }
+    .impact-score strong { display: block; color: var(--green); font-size: 28px; line-height: 1; }
+    .impact-score small { color: var(--muted); font-size: 10px; font-weight: 900; }
+    .floating-note { position: absolute; z-index: 3; display: grid; gap: 2px; padding: 12px 14px; background: var(--ink); border-radius: 17px; color: var(--paper); box-shadow: 6px 6px 0 var(--red); font-size: 11px; font-weight: 800; }
+    .floating-note strong { color: var(--yellow); font-size: 18px; }
+    .note-one { top: 10%; right: 2%; transform: rotate(7deg); }
+    .note-two { bottom: 10%; left: 2%; transform: rotate(-7deg); }
+    .section { margin-top: 38px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 17px; }
+    .section-head h2 { margin: 0; font-size: clamp(27px, 4vw, 44px); letter-spacing: -.06em; }
+    .section-head p { max-width: 370px; margin: 0; color: var(--muted); font-size: 13px; font-weight: 700; line-height: 1.7; }
+    .intent-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .intent {
+      min-height: 150px; padding: 17px; text-align: right; background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .intent:hover, .intent.selected { transform: translateY(-4px); border-color: var(--green); background: #eff7ee; }
+    .intent-icon { display: grid; place-items: center; width: 43px; height: 43px; margin-bottom: 22px; color: var(--ink); background: var(--yellow); border-radius: 13px; font-size: 22px; }
+    .intent h3 { margin: 0; font-size: 17px; }
+    .intent p { margin: 5px 0 0; color: var(--muted); font-size: 11px; font-weight: 700; line-height: 1.6; }
+    .recommendation {
+      display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; align-items: stretch;
+      padding: 22px; background: var(--ink); border-radius: 26px; color: var(--paper); overflow: hidden;
+    }
+    .recommend-copy { padding: 12px 5px; }
+    .recommend-copy .eyebrow { color: var(--yellow); }
+    .recommend-copy .eyebrow span { background: var(--yellow); }
+    .recommend-copy h2 { max-width: 560px; margin: 0; font-family: Changa, Cairo, sans-serif; font-size: clamp(28px, 4vw, 52px); line-height: 1.05; letter-spacing: -.07em; }
+    .recommend-copy p { max-width: 470px; margin: 15px 0 21px; color: #d3ccc1; font-size: 14px; line-height: 1.8; font-weight: 700; }
+    .recommend-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+    .recommend-actions button { padding: 11px 15px; color: var(--ink); background: var(--yellow); border-radius: 12px; font-size: 12px; font-weight: 900; }
+    .recommend-actions button:last-child { color: var(--paper); background: transparent; border: 1px solid rgba(255,255,255,.25); }
+    .recommend-card { display: grid; grid-template-columns: 1fr .8fr; gap: 13px; align-items: center; padding: 13px; color: var(--ink); background: var(--card); border-radius: 20px; }
+    .recommend-card img { width: 100%; height: 170px; object-fit: cover; border-radius: 15px; }
+    .recommend-card h3 { margin: 0 0 4px; font-size: 21px; }
+    .recommend-card p { margin: 0 0 13px; color: var(--muted); font-size: 11px; font-weight: 800; line-height: 1.6; }
+    .recommend-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+    .recommend-meta span { padding: 5px 8px; color: var(--green); background: #e6f2e7; border-radius: 99px; font-size: 10px; font-weight: 900; }
+    .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .food-card { overflow: hidden; background: var(--card); border: 1px solid var(--line); border-radius: 20px; }
+    .food-image { height: 170px; position: relative; overflow: hidden; background: var(--yellow); }
+    .food-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+    .food-card:hover img { transform: scale(1.05); }
+    .food-image span { position: absolute; bottom: 11px; right: 11px; padding: 5px 8px; color: var(--paper); background: var(--ink); border-radius: 99px; font-size: 10px; font-weight: 900; }
+    .food-info { padding: 14px; }
+    .food-info h3 { margin: 0; font-size: 18px; }
+    .food-info p { min-height: 40px; margin: 6px 0 13px; color: var(--muted); font-size: 11px; line-height: 1.7; font-weight: 700; }
+    .food-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .price { color: var(--red); font-size: 19px; font-weight: 900; }
+    .add-button { padding: 9px 12px; color: var(--ink); background: var(--yellow); border-radius: 10px; font-size: 12px; font-weight: 900; }
+    .impact-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 18px; overflow: hidden; background: var(--line); border: 1px solid var(--line); border-radius: 18px; }
+    .impact-item { padding: 18px; background: var(--card); }
+    .impact-item strong { display: block; color: var(--green); font-size: 27px; }
+    .impact-item span { color: var(--muted); font-size: 11px; font-weight: 800; }
+    .impact-explainer {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 15px;
+    }
+    .impact-explainer article {
+      padding: 17px;
+      border: 2px solid rgba(47, 125, 88, .28);
+      border-radius: 17px;
+      background: #e8f3e8;
+    }
+    .impact-explainer h3 { margin: 0 0 7px; color: #1d5c3e; font-size: 17px; }
+    .impact-explainer p { margin: 0; color: #3f3a34; font-size: 13px; line-height: 1.8; font-weight: 800; }
+    .impact-explainer-title { margin: 26px 0 0; color: var(--ink); font-size: 24px; }
+    .category-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
+    .category-tab { padding: 9px 13px; color: var(--ink); background: #f0ece4; border-radius: 999px; font-size: 12px; font-weight: 900; }
+    .category-tab.active { color: var(--paper); background: var(--ink); }
+    .cart-drawer { position: fixed; inset: 0 0 0 auto; z-index: 40; width: min(440px, 100%); display: flex; flex-direction: column; padding: 24px; background: var(--card); box-shadow: -20px 0 60px rgba(23,23,23,.18); transform: translateX(105%); transition: transform .35s cubic-bezier(.16,1,.3,1); }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 17px; border-bottom: 1px solid var(--line); }
+    .cart-head h2 { margin: 0; font-size: 25px; }
+    .close-button { width: 38px; height: 38px; border-radius: 50%; background: #f0ece4; font-weight: 900; }
+    .cart-items { flex: 1; overflow: auto; padding: 16px 0; }
+    .cart-item { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .cart-item-icon { width: 52px; height: 52px; overflow: hidden; border-radius: 14px; background: var(--yellow); }
+    .cart-item-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .cart-item strong { display: block; font-size: 14px; }
+    .cart-item small { color: var(--muted); font-weight: 800; }
+    .cart-item b { color: var(--red); white-space: nowrap; }
+    .cart-empty { margin: 70px 0; color: var(--muted); text-align: center; font-weight: 800; }
+    .cart-summary { padding-top: 16px; border-top: 1px solid var(--line); }
+    .summary-line { display: flex; justify-content: space-between; margin-bottom: 9px; font-weight: 800; }
+    .summary-line.total { margin-top: 14px; color: var(--red); font-size: 22px; }
+    .checkout { width: 100%; margin-top: 13px; padding: 14px; color: var(--paper); background: var(--red); border-radius: 13px; font-weight: 900; }
+    .scrim { position: fixed; inset: 0; z-index: 35; background: rgba(23,23,23,.45); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+    .scrim.open { opacity: 1; pointer-events: auto; }
+    .toast { position: fixed; right: 24px; bottom: 24px; z-index: 60; max-width: 340px; padding: 12px 16px; color: var(--paper); background: var(--ink); border-radius: 12px; font-weight: 800; opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
+    .account-modal { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 18px; background: rgba(23,23,23,.5); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    .account-modal.open { opacity: 1; pointer-events: auto; }
+    .account-card { width: min(440px,100%); padding: 24px; background: var(--card); border: 2px solid var(--ink); border-radius: 22px; box-shadow: 8px 8px 0 var(--yellow); }
+    .account-card h2 { margin: 0 0 7px; font-size: 25px; }
+    .account-card p { margin: 0 0 16px; color: var(--muted); font-size: 12px; font-weight: 800; line-height: 1.7; }
+    .account-link { display:block; margin-bottom:13px; color:var(--green); font-size:12px; font-weight:900; text-decoration:none; }
+    .account-form { display: grid; gap: 10px; }
+    .account-form label { color: var(--ink); font-size: 12px; font-weight: 900; }
+    .account-form input { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; font: inherit; }
+    .account-actions { display: flex; gap: 8px; margin-top: 6px; }
+    .account-actions button { padding: 11px 14px; border-radius: 10px; font: inherit; font-weight: 900; cursor: pointer; }
+    .account-submit { color: var(--paper); background: var(--red); }
+    .account-close { color: var(--ink); background: #f0ece4; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .ai-modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 18px; background: rgba(23,23,23,.54); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    .ai-modal.open { opacity: 1; pointer-events: auto; }
+    .ai-card { width: min(520px,100%); max-height: min(680px, calc(100dvh - 36px)); overflow:auto; padding:22px; background:var(--card); border:2px solid var(--ink); border-radius:22px; box-shadow:8px 8px 0 var(--yellow); }
+    .ai-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .ai-label { color:var(--green); font-size:11px; font-weight:900; }
+    .ai-card h2 { margin:3px 0 7px; font-size:28px; letter-spacing:-.05em; }
+    .ai-card p { margin:0; color:var(--muted); font-size:12px; font-weight:800; line-height:1.8; }
+    .ai-image { width:100%; height:190px; margin:15px 0; overflow:hidden; border-radius:15px; background:var(--yellow); }
+    .ai-image img { width:100%; height:100%; object-fit:cover; }
+    .ai-facts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
+    .ai-fact { padding:10px; border-radius:11px; background:#f0ece4; }
+    .ai-fact strong { display:block; color:var(--red); font-size:18px; }
+    .ai-fact span { display:block; margin-top:3px; color:var(--muted); font-size:10px; font-weight:900; }
+    .ai-suggestion { margin-top:13px; padding:12px; border-radius:12px; background:#e8f3e8; color:var(--green); font-size:11px; font-weight:900; line-height:1.7; }
+    .ai-actions { display:flex; gap:8px; margin-top:15px; }
+    .ai-actions button { padding:11px 14px; border-radius:10px; font-weight:900; }
+    .ai-add { color:var(--paper); background:var(--red); }
+    .ai-close { color:var(--ink); background:#f0ece4; }
+    .section {
+      opacity: 0;
+      transform: translateY(34px);
+      transition: opacity .8s cubic-bezier(.16, 1, .3, 1), transform .8s cubic-bezier(.16, 1, .3, 1);
+    }
+    .section.is-visible,
+    .hero-copy.is-visible,
+    .hero-stage.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hero-copy,
+    .hero-stage {
+      opacity: 1;
+      transform: none;
+    }
+    .hero-card {
+      animation: hero-card-float 5s ease-in-out infinite;
+    }
+    .orbit {
+      animation: orbit-drift 16s linear infinite;
+    }
+    .floating-note {
+      animation: note-float 4.5s ease-in-out infinite;
+    }
+    .note-two { animation-delay: -1.7s; }
+    .food-card,
+    .intent,
+    .recommend-card,
+    .impact-item {
+      opacity: 0;
+      transform: translateY(22px) scale(.98);
+      transition: opacity .7s cubic-bezier(.16, 1, .3, 1), transform .7s cubic-bezier(.16, 1, .3, 1), box-shadow .25s ease;
+    }
+    .food-card.is-visible,
+    .intent.is-visible,
+    .recommend-card.is-visible,
+    .impact-item.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .food-card:hover,
+    .recommend-card:hover,
+    .impact-item:hover {
+      box-shadow: 0 16px 30px rgba(23, 23, 23, .1);
+    }
+    @keyframes hero-card-float {
+      0%, 100% { transform: rotate(4deg) translateY(0); }
+      50% { transform: rotate(2deg) translateY(-10px); }
+    }
+    @keyframes orbit-drift {
+      from { transform: rotate(-12deg); }
+      to { transform: rotate(348deg); }
+    }
+    @keyframes note-float {
+      0%, 100% { margin-top: 0; }
+      50% { margin-top: -8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .section,
+      .hero-copy,
+      .hero-stage,
+      .food-card,
+      .intent,
+      .recommend-card,
+      .impact-item {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .hero-card,
+      .orbit,
+      .floating-note {
+        animation: none;
+      }
+    }
+    .table-context {
+      margin: 0 auto 18px;
+      padding: 11px 15px;
+      color: var(--green);
+      background: rgba(47, 125, 88, .11);
+      border: 1px solid rgba(47, 125, 88, .22);
+      border-radius: 14px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .promo-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      margin: 0 auto 18px;
+      padding: 12px 16px;
+      color: var(--ink);
+      background: var(--yellow);
+      border: 2px solid var(--ink);
+      border-radius: 14px;
+      box-shadow: 4px 4px 0 var(--ink);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .promo-banner strong { color: var(--red); }
+    .promo-banner button {
+      padding: 7px 11px;
+      color: var(--paper);
+      background: var(--ink);
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: 0; }
+      .hero-copy { padding-top: 28px; }
+      .hero-stage { min-height: 440px; }
+      .intent-grid { grid-template-columns: repeat(2, 1fr); }
+      .menu-grid { grid-template-columns: repeat(2, 1fr); }
+      .recommendation { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .topbar { min-height: 68px; padding: 10px 16px; }
+      .mode-pill { display: none; }
+      .main { padding: 20px 16px 75px; }
+      .hero-title { padding-right: 0; }
+      .hero-title .hungry { font-size: 45px; }
+      .hero-title .brand-word { font-size: 84px; }
+      .hero-title .impact-line { font-size: 29px; gap: 9px; }
+      .points-badge { margin-top: 4px; }
+      .hero-stage { min-height: 380px; }
+      .hero-card { width: min(360px, 83vw); }
+      .hero-image { height: 220px; }
+      .floating-note { display: none; }
+      .section-head { align-items: start; flex-direction: column; gap: 5px; }
+      .intent-grid, .menu-grid { grid-template-columns: 1fr; }
+      .recommend-card { grid-template-columns: 1fr; }
+      .recommend-card img { height: 190px; }
+      .impact-strip { grid-template-columns: 1fr; }
+      .impact-explainer { grid-template-columns: 1fr; }
+      .toast { right: 16px; bottom: 16px; left: 16px; max-width: none; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><div class="mark">ك</div><div><strong>كاريزما</strong><small>محدش قدك</small></div></div>
+      <div class="top-actions">
+        <a class="support-link" href="support.html">الدعم</a>
+        <div class="mode-pill"><span class="mode-dot"></span> وضع الأكل الواعي</div>
+        <button class="cart-button" id="openCart">السلة <span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </header>
+
+    <main>
+      <div class="table-context" id="tableContext" hidden></div>
+      <div class="promo-banner" id="promoBanner" hidden></div>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span></span> <span id="heroEyebrow">الذكاء الاصطناعي بيظبطها على مزاجك</span></div>
+          <h1 class="hero-title">
+            <span class="hungry">جعان؟</span>
+            <span class="brand-word">كاريزما</span>
+            <span class="impact-line"><span><span class="impact-prefix">و</span>سيب أثر حسن</span><button class="points-badge" id="pointsBadge" type="button" aria-label="فتح حساب نقاط الأثر"><strong id="heroPoints">0</strong><small id="heroPointsLabel">نقطة أثر<br>مجمعة</small></button></span>
+          </h1>
+          <p id="heroDescription">كاريزما لوب بتفهم ذوقك، وتختار لك وجبة مناسبة للمخزون الحالي عشان الأكل الحلو مايروحش هدر.</p>
+          <div class="hero-cta"><button class="primary" id="startSmart">اعملّي وجبتي</button><button class="secondary" id="jumpMenu">شوف المنيو</button></div>
+        </div>
+        <div class="hero-stage">
+          <div class="orbit"></div>
+          <div class="floating-note note-one"><strong>92%</strong><span>تطابق مع ذوقك</span></div>
+          <div class="floating-note note-two"><strong>1.8 كجم</strong><span>هدر تم إنقاذه اليوم</span></div>
+          <article class="hero-card">
+            <div class="hero-image"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85" alt="برجر كاريزما"><div class="ai-badge"><b>AI</b> اقتراح لحظي</div></div>
+            <div class="hero-card-foot"><div><h2>جرّب إنقاذ اليوم</h2><p>وجبة معمولة من مكونات متاحة دلوقتي</p></div><div class="impact-score"><strong>+18</strong><small>نقطة أثر</small></div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="smart">
+        <div class="section-head"><h2>إيه أهم حاجة عندك؟</h2><p>اختار هدفك، والذكاء الاصطناعي هيبني لك اقتراح من غير ما تحتار.</p></div>
+        <div class="intent-grid">
+          <button class="intent selected" data-intent="taste"><div class="intent-icon">●</div><h3>على مزاجي</h3><p>اقتراح قريب من طلباتك المفضلة.</p></button>
+          <button class="intent" data-intent="save"><div class="intent-icon">↘</div><h3>أوفر فلوس</h3><p>أفضل وجبة مقابل الميزانية.</p></button>
+          <button class="intent" data-intent="rescue"><div class="intent-icon">♻</div><h3>أنقذ فائض</h3><p>استخدم مكونات متاحة بدل ما تهدر.</p></button>
+          <button class="intent" data-intent="light"><div class="intent-icon">✦</div><h3>أخف أثر</h3><p>اختيارات بتغليف وأثر أقل.</p></button>
+        </div>
+      </section>
+
+      <section class="section recommendation" id="recommendation">
+        <div class="recommend-copy"><div class="eyebrow"><span></span> اقتراح كاريزما ليك</div><h2 id="recommendTitle">دبل كاريزما من غير تردد</h2><p id="recommendText">اختيارك ده مناسب لذوقك، ومكوناته متاحة حاليًا. كل طلب من النوع ده بيساعدنا نقلل فائض آخر اليوم.</p><div class="recommend-actions"><button id="recommendAdd">ضيفها للسلة</button><button id="nextRecommend">اقتراح تاني</button></div></div>
+        <div class="recommend-card"><img id="recommendImage" src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=85" alt="اقتراح وجبة"><div><h3 id="recommendName">دبل كاريزما</h3><p>لحمة، شيدر، صوص مدخن وبطاطس مقرمشة.</p><div class="recommend-meta"><span id="recommendImpact">يوفر 12 نقطة أثر</span><span id="recommendPrice">135 ج.م</span></div></div></div>
+      </section>
+
+      <section class="section" id="menu">
+        <div class="section-head"><h2>اختار براحتك</h2><p>كل صنف هنا له بصمة، وكل إضافة للسلة بتحدث حساب الأثر تلقائيًا.</p></div>
+        <div class="category-tabs" aria-label="تصنيفات الوجبات">
+          <button class="category-tab active" data-category="all">كل المنيو</button>
+          <button class="category-tab" data-category="family">العائلات</button>
+          <button class="category-tab" data-category="kids">الأطفال</button>
+          <button class="category-tab" data-category="young">الجامدين</button>
+          <button class="category-tab" data-category="friends">الشلة والصحبة</button>
+          <button class="category-tab" data-category="offers">العروض</button>
+        </div>
+        <div class="menu-grid" id="menuGrid"></div>
+        <div class="impact-strip"><div class="impact-item"><strong id="impactMeals">0</strong><span>وجبة ساعدت في تقليل الهدر</span></div><div class="impact-item"><strong id="impactPoints">0</strong><span>نقطة أثر من طلبك</span></div><div class="impact-item"><strong id="impactWaste">0 جم</strong><span>هدر تم تجنبه تقديريًا</span></div></div>
+        <h3 class="impact-explainer-title">أثرك ببساطة</h3>
+        <div class="impact-explainer" aria-label="شرح مؤشرات الأثر">
+          <article>
+            <h3>يعني إيه هدر تم تجنبه؟</h3>
+            <p>تقدير لكمية مكونات متاحة كان ممكن تفضل بدون استخدام، واختيارك ساعد المطعم يستخدمها في وجبة بدل التخلص منها.</p>
+          </article>
+          <article>
+            <h3>يعني إيه نقاط أثر؟</h3>
+            <p>نقاط يحصل عليها العميل عندما يختار وجبة تساعد في استخدام فائض اليوم أو تقلل التغليف. النقاط تتحول لعروض بشروط واضحة.</p>
+          </article>
+          <article>
+            <h3>إيه أثرها على البيئة؟</h3>
+            <p>تقليل الطعام المهدَر يقلل استهلاك الموارد المرتبطة بإنتاجه ونقله والتخلص منه. الأرقام الحالية تقديرية حتى نربطها ببيانات المطعم الفعلية.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="سلة الطلب"><div class="cart-head"><h2>طلبك</h2><button class="close-button" id="closeCart" aria-label="إغلاق السلة">×</button></div><div class="cart-items" id="cartItems"><div class="cart-empty">السلة لسه فاضية<br>اختار حاجة تحبها</div></div><div class="cart-summary"><div class="summary-line"><span>المجموع</span><span id="subtotal">0 ج.م</span></div><div class="summary-line"><span>التوصيل</span><span id="delivery">-</span></div><div class="summary-line total"><span>الإجمالي</span><span id="total">0 ج.م</span></div><button class="checkout" id="checkout">كمل الطلب</button></div></aside>
+  <div class="toast" id="toast"></div>
+  <div class="ai-modal" id="aiModal" aria-hidden="true">
+    <article class="ai-card" role="dialog" aria-modal="true" aria-labelledby="aiTitle">
+      <div class="ai-head"><div><div class="ai-label">مساعد كاريزما التجريبي</div><h2 id="aiTitle">شرح الصنف</h2></div><button class="close-button" id="closeAi" type="button" aria-label="إغلاق الشرح">×</button></div>
+      <div class="ai-image"><img id="aiImage" alt=""></div>
+      <p id="aiDescription"></p>
+      <div class="ai-facts"><div class="ai-fact"><strong id="aiPrice"></strong><span>السعر</span></div><div class="ai-fact"><strong id="aiImpact"></strong><span>نقطة أثر</span></div><div class="ai-fact"><strong id="aiWaste"></strong><span>هدر تم تجنبه</span></div></div>
+      <div class="ai-suggestion" id="aiSuggestion"></div>
+      <div class="ai-actions"><button class="ai-add" id="aiAdd" type="button">ضيفها للسلة</button><button class="ai-close" id="aiCloseAction" type="button">رجوع للمنيو</button></div>
+    </article>
+  </div>
+  <div class="account-modal" id="accountModal" aria-hidden="true">
+    <div class="account-card" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+      <h2 id="accountTitle">سجل حسابك وخلي نقاطك معاك</h2>
+      <p>للحساب الكامل استخدم الإيميل أو رقم الهاتف مع كلمة سر وكود تفعيل. هذه النافذة السريعة تحفظ الحساب محليًا في الديمو.</p>
+      <a class="account-link" href="account.html">فتح صفحة الدخول والتسجيل الكاملة</a>
+      <form class="account-form" id="accountForm">
+        <label for="accountName">الاسم</label>
+        <input id="accountName" name="name" required autocomplete="name">
+        <label for="accountEmail">البريد الإلكتروني</label>
+        <input id="accountEmail" name="email" type="email" required autocomplete="email">
+        <div class="account-actions"><button class="account-submit" type="submit">سجل واحفظ النقاط</button><button class="account-close" type="button" id="closeAccount">إلغاء</button></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="./menu-data.js"></script>
+  <script>
+    const cart = new Map();
+    const menu = window.CHARISMA_MENU;
+    const intents = window.CHARISMA_INTENTS;
+    const siteSettings = JSON.parse(localStorage.getItem('charisma-site-settings') || 'null') || {};
+    const savedOffers = JSON.parse(localStorage.getItem('charisma-offers') || '[]');
+    let activeIntent = 'taste';
+    let activeCategory = 'all';
+    let revealObserver = null;
+    const $ = id => document.getElementById(id);
+    const accountModal = $('accountModal');
+    function renderSiteSettings() {
+      if (siteSettings.heroEyebrow) $('heroEyebrow').textContent = siteSettings.heroEyebrow;
+      if (siteSettings.heroDescription) $('heroDescription').textContent = siteSettings.heroDescription;
+      if (siteSettings.restaurantName) document.title = `${siteSettings.restaurantName} | اطلب بذكاء`;
+      const announcement = siteSettings.announcement;
+      const banner = $('promoBanner');
+      if (announcement) { banner.textContent = announcement; banner.hidden = false; }
+    }
+    function renderActiveOffer() {
+      const now = Date.now();
+      const active = savedOffers.find(offer => now >= new Date(offer.startAt).getTime() && now <= new Date(offer.endAt).getTime());
+      const banner = $('promoBanner');
+      if (!active) return;
+      const item = menu.find(entry => String(entry.id) === String(active.itemId));
+      banner.innerHTML = `<strong>${active.title}</strong><span>${active.description}</span>${item ? `<button type="button" data-offer-item="${item.id}">شوف الصنف</button>` : ''}`;
+      banner.hidden = false;
+      banner.querySelector('[data-offer-item]')?.addEventListener('click', () => { activeCategory = 'all'; document.querySelectorAll('[data-category]').forEach(tab => tab.classList.toggle('active', tab.dataset.category === 'all')); renderMenu(); openAi(Number(item.id)); });
+    }
+    function renderMenu() {
+      const visibleMenu = activeCategory === 'all' || activeCategory === 'offers' ? menu : menu.filter(item => item.category === activeCategory);
+      $('menuGrid').innerHTML = visibleMenu.map(item => `<article class="food-card" data-food="${item.id}" tabindex="0" role="button" aria-label="شرح ${item.name}"><div class="food-image"><img src="${item.image}" alt="${item.name}"><span>+${item.impact} نقطة أثر</span></div><div class="food-info"><h3>${item.name}</h3><p>${item.description}</p><div class="food-foot"><span class="price">${item.price} ج.م</span><button class="add-button" data-add="${item.id}">+ أضف للسلة</button></div></div></article>`).join('');
+      const renderedCards = $('menuGrid').querySelectorAll('.food-card');
+      if (revealObserver) renderedCards.forEach(card => revealObserver.observe(card));
+      else renderedCards.forEach(card => card.classList.add('is-visible'));
+      $('menuGrid').querySelectorAll('[data-add]').forEach(button => button.addEventListener('click', () => addToCart(Number(button.dataset.add))));
+      $('menuGrid').querySelectorAll('[data-food]').forEach(card => {
+        const open = event => { if (event.target.closest('[data-add]')) return; openAi(Number(card.dataset.food)); };
+        card.addEventListener('click', open);
+        card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(event); } });
+      });
+    }
+    function setRecommendation(key) {
+      const [title, text, id] = intents[key];
+      const item = menu.find(product => product.id === id);
+      $('recommendTitle').textContent = title;
+      $('recommendText').textContent = text;
+      $('recommendName').textContent = item.name;
+      $('recommendPrice').textContent = `${item.price} ج.م`;
+      $('recommendImpact').textContent = `يوفر ${item.impact} نقطة أثر`;
+      $('recommendImage').src = item.image;
+      $('recommendAdd').dataset.add = item.id;
+    }
+    function addToCart(id) {
+      cart.set(id, (cart.get(id) || 0) + 1);
+      renderCart();
+      showToast('اتضافت للسلة، والأثر اتحسب');
+    }
+    function renderCart() {
+      const entries = [...cart.entries()];
+      const count = entries.reduce((sum, [, qty]) => sum + qty, 0);
+      const subtotal = entries.reduce((sum, [id, qty]) => sum + menu.find(item => item.id === id).price * qty, 0);
+      const points = entries.reduce((sum, [id, qty]) => sum + menu.find(item => item.id === id).impact * qty, 0);
+      const waste = entries.reduce((sum, [id, qty]) => sum + menu.find(item => item.id === id).waste * qty, 0);
+      $('cartCount').textContent = count;
+      $('subtotal').textContent = `${subtotal} ج.م`;
+      $('delivery').textContent = subtotal ? '20 ج.م' : '-';
+      $('total').textContent = `${subtotal ? subtotal + 20 : 0} ج.م`;
+      $('impactMeals').textContent = count;
+      $('impactPoints').textContent = points;
+      $('impactWaste').textContent = `${waste} جم`;
+      $('cartItems').innerHTML = entries.length ? entries.map(([id, qty]) => { const item = menu.find(product => product.id === id); return `<div class="cart-item"><div class="cart-item-icon"><img src="${item.image}" alt=""></div><div><strong>${item.name}</strong><small>${qty} × ${item.price} ج.م</small></div><b>${item.price * qty} ج.م</b></div>`; }).join('') : '<div class="cart-empty">السلة لسه فاضية<br>اختار حاجة تحبها</div>';
+    }
+    function setCart(open) { $('cartDrawer').classList.toggle('open', open); $('scrim').classList.toggle('open', open); }
+    function showToast(message) { $('toast').textContent = message; $('toast').classList.add('show'); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => $('toast').classList.remove('show'), 2200); }
+    const aiModal = $('aiModal');
+    let aiItem = null;
+    function openAi(id) {
+      aiItem = menu.find(item => item.id === id);
+      if (!aiItem) return;
+      $('aiTitle').textContent = aiItem.name;
+      $('aiImage').src = aiItem.image;
+      $('aiImage').alt = aiItem.name;
+      $('aiDescription').textContent = `المساعد شايف إن ${aiItem.name} مناسب لو بتحب ${aiItem.description.replace(/[.،].*$/, '')}. الصنف متوازن بين الطعم والسعر، واختيارك له يضيف أثرًا واضحًا في حسابك.`;
+      $('aiPrice').textContent = `${aiItem.price} ج.م`;
+      $('aiImpact').textContent = `+${aiItem.impact}`;
+      $('aiWaste').textContent = `${aiItem.waste} جم`;
+      const pairing = aiItem.id === 5 ? 'اقتراح المساعد: جرّبه مع كاريزما كلاسيك لو عايز وجبة كاملة.' : aiItem.id === 6 ? 'اقتراح المساعد: اختاره مع وجبة فيها تغليف أقل لتحصل على أثر أخف.' : 'اقتراح المساعد: أضف فرايز تشيدر للمشاركة، أو ليمون بالنعناع لو عايز توازن الوجبة.';
+      $('aiSuggestion').textContent = pairing;
+      aiModal.classList.add('open');
+      aiModal.setAttribute('aria-hidden', 'false');
+    }
+    function closeAi() { aiModal.classList.remove('open'); aiModal.setAttribute('aria-hidden', 'true'); }
+    $('closeAi').addEventListener('click', closeAi);
+    $('aiCloseAction').addEventListener('click', closeAi);
+    aiModal.addEventListener('click', event => { if (event.target === aiModal) closeAi(); });
+    $('aiAdd').addEventListener('click', () => { if (aiItem) addToCart(aiItem.id); closeAi(); });
+    document.querySelectorAll('[data-intent]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('.intent').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); activeIntent = button.dataset.intent; setRecommendation(activeIntent); showToast('الاقتراح اتغير حسب هدفك'); }));
+    $('recommendAdd').addEventListener('click', event => addToCart(Number(event.currentTarget.dataset.add)));
+    $('nextRecommend').addEventListener('click', () => { const keys = Object.keys(intents); const next = keys[(keys.indexOf(activeIntent) + 1) % keys.length]; activeIntent = next; setRecommendation(next); });
+    $('startSmart').addEventListener('click', () => $('smart').scrollIntoView({ behavior: 'smooth' }));
+    $('jumpMenu').addEventListener('click', () => $('menu').scrollIntoView({ behavior: 'smooth' }));
+    $('openCart').addEventListener('click', () => setCart(true));
+    $('closeCart').addEventListener('click', () => setCart(false));
+    $('scrim').addEventListener('click', () => setCart(false));
+    function renderAccountPoints() {
+      const account = JSON.parse(localStorage.getItem('charisma-account') || 'null');
+      const lastOrder = JSON.parse(localStorage.getItem('charisma-last-order') || 'null');
+      const pendingPoints = lastOrder && !lastOrder.pointsClaimed ? Number(lastOrder.points || 0) : 0;
+      $('heroPoints').textContent = account ? Number(account.points || 0) : pendingPoints;
+      $('heroPointsLabel').innerHTML = account ? 'نقطة أثر<br>في حسابك' : 'نقطة أثر<br>معلقة';
+    }
+    function setAccountModal(open) {
+      accountModal.classList.toggle('open', open);
+      accountModal.setAttribute('aria-hidden', String(!open));
+    }
+    $('pointsBadge').addEventListener('click', () => setAccountModal(true));
+    $('closeAccount').addEventListener('click', () => setAccountModal(false));
+    accountModal.addEventListener('click', event => { if (event.target === accountModal) setAccountModal(false); });
+    $('accountForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const existing = JSON.parse(localStorage.getItem('charisma-account') || 'null');
+      const account = { name: String(form.get('name') || '').trim(), email: String(form.get('email') || '').trim(), points: existing ? Number(existing.points || 0) : 0 };
+      localStorage.setItem('charisma-account', JSON.stringify(account));
+      renderAccountPoints();
+      setAccountModal(false);
+      showToast('تم تسجيل الحساب. أي نقاط جديدة هتتضاف له.');
+    });
+    document.querySelectorAll('[data-category]').forEach(button => button.addEventListener('click', () => {
+      activeCategory = button.dataset.category;
+      document.querySelectorAll('[data-category]').forEach(item => item.classList.toggle('active', item === button));
+      renderMenu();
+    }));
+    function createDemoImpactCode() {
+      const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const values = new Uint32Array(6);
+      crypto.getRandomValues(values);
+      return Array.from(values, value => alphabet[value % alphabet.length]).join('');
+    }
+    $('checkout').addEventListener('click', () => {
+      if (!cart.size) return showToast('اختار حاجة الأول');
+      const impactCode = createDemoImpactCode();
+      const orderCode = `CHR-${Math.floor(100000 + Math.random() * 900000)}`;
+      const record = {
+        orderCode,
+        code: impactCode,
+        points: Number($('impactPoints').textContent),
+        wasteGrams: $('impactWaste').textContent,
+        itemsCount: Number($('impactMeals').textContent),
+        packagingSaved: Number($('impactPoints').textContent) >= 18 ? 1 : 0,
+        createdAt: new Date().toISOString(),
+        status: 0
+      };
+      localStorage.setItem('charisma-last-impact-code', JSON.stringify(record));
+      localStorage.setItem('charisma-last-order', JSON.stringify(record));
+      showToast(`تم إنشاء الطلب ${orderCode}`);
+      setTimeout(() => {
+        window.location.href = `order-tracking.html?order=${encodeURIComponent(orderCode)}`;
+      }, 500);
+    });
+    const tableNumber = new URLSearchParams(window.location.search).get('table');
+    if (new URLSearchParams(window.location.search).get('impact') === '1') {
+      window.location.replace('impact-redeem.html');
+    }
+    if (tableNumber) {
+      $('tableContext').textContent = `طلبك هيتجهز على ترابيزة ${tableNumber}`;
+      $('tableContext').hidden = false;
+    }
+    if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+      window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).catch(() => {}));
+    }
+    renderSiteSettings();
+    renderActiveOffer();
+    setRecommendation(activeIntent);
+    renderMenu();
+    renderCart();
+    renderAccountPoints();
+    const revealTargets = document.querySelectorAll('.hero-copy, .hero-stage, .section, .food-card, .intent, .recommend-card, .impact-item');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      revealTargets.forEach(target => target.classList.add('is-visible'));
+    } else if ('IntersectionObserver' in window) {
+      revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        });
+      }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+      revealTargets.forEach(target => revealObserver.observe(target));
+    } else {
+      revealTargets.forEach(target => target.classList.add('is-visible'));
+    }
+  </script>
+  <script src="./preview-guard.js"></script>
+</body>
+</html>
