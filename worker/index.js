@@ -91,7 +91,7 @@ export default {
       return jsonResponse({ error: 'Invalid intent.' }, 400, origin);
     }
 
-    if (!env.GEMINI_API_KEY) {
+    if (!env.AI) {
       return jsonResponse({ error: 'AI service is not configured.' }, 503, origin);
     }
 
@@ -111,76 +111,63 @@ export default {
       description: item.description,
       price: item.price,
       impact: item.impact,
+      waste: item.waste,
       category: item.category
     }));
 
-    let providerResponse;
+    let providerData;
     try {
-      providerResponse = await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': env.GEMINI_API_KEY
+      providerData = await env.AI.run('@cf/meta/llama-3.3-70b-instruct-fp8-fast', {
+        messages: [
+          {
+            role: 'system',
+            content: 'أنت مساعد لمنيو مطعم. اختر صنفًا واحدًا فقط من القائمة المرفقة، ولا تخترع صنفًا أو سعرًا أو معلومة. أعد JSON صالحًا فقط يحتوي itemId كرقم وtitle وreason كنصين. اجعل العنوان والسبب بالعربية، والسبب قصيرًا وصادقًا. بيانات الهدر تقديرية وليست مخزونًا مباشرًا.'
           },
-          body: JSON.stringify({
-            systemInstruction: {
-              parts: [{
-                text: 'أنت مساعد لمنيو مطعم. اختر صنفًا واحدًا فقط من القائمة المرفقة، ولا تخترع صنفًا أو سعرًا أو معلومة. أعد JSON فقط يحتوي itemId وtitle وreason. اجعل العنوان والسبب بالعربية، والسبب قصيرًا وصادقًا ولا تدّعِ معلومات عن المخزون غير الموجودة.'
-              }]
+          {
+            role: 'user',
+            content: JSON.stringify({
+              goal: intentLabels[payload.intent],
+              menu: itemList
+            })
+          }
+        ],
+        temperature: 0.3,
+        max_tokens: 180,
+        response_format: {
+          type: 'json_schema',
+          json_schema: {
+            type: 'object',
+            properties: {
+              itemId: { type: 'integer', enum: menu.map(item => item.id) },
+              title: { type: 'string' },
+              reason: { type: 'string' }
             },
-            contents: [{
-              role: 'user',
-              parts: [{
-                text: JSON.stringify({
-                  goal: intentLabels[payload.intent],
-                  menu: itemList
-                })
-              }]
-            }],
-            generationConfig: {
-              temperature: 0.3,
-              maxOutputTokens: 180,
-              responseMimeType: 'application/json',
-              responseSchema: {
-                type: 'OBJECT',
-                properties: {
-                  itemId: { type: 'INTEGER' },
-                  title: { type: 'STRING' },
-                  reason: { type: 'STRING' }
-                },
-                required: ['itemId', 'title', 'reason']
-              }
-            }
-          }),
-          signal: AbortSignal.timeout(15000)
+            required: ['itemId', 'title', 'reason']
+          }
         }
-      );
-    } catch {
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message.slice(0, 240) : 'Unknown error.';
+      console.error('Cloudflare Workers AI request failed.', message);
       return jsonResponse({ error: 'AI provider is temporarily unavailable.' }, 502, origin);
     }
 
-    if (!providerResponse.ok) {
-      return jsonResponse({ error: 'AI provider rejected the request.' }, 502, origin);
-    }
-
-    let providerData;
-    try {
-      providerData = await providerResponse.json();
-    } catch {
-      return jsonResponse({ error: 'AI provider returned an invalid response.' }, 502, origin);
-    }
-
-    const responseText = providerData.candidates?.[0]?.content?.parts?.[0]?.text;
     let suggestion;
     try {
-      suggestion = JSON.parse(responseText);
+      const response = providerData?.response;
+      if (typeof response === 'string') {
+        const jsonStart = response.indexOf('{');
+        const jsonEnd = response.lastIndexOf('}');
+        if (jsonStart < 0 || jsonEnd < jsonStart) throw new SyntaxError('Missing JSON object.');
+        suggestion = JSON.parse(response.slice(jsonStart, jsonEnd + 1));
+      } else {
+        suggestion = response;
+      }
     } catch {
       return jsonResponse({ error: 'AI provider returned an invalid suggestion.' }, 502, origin);
     }
 
-    const item = menu.find(candidate => candidate.id === suggestion.itemId);
+    const item = menu.find(candidate => candidate.id === Number(suggestion.itemId));
     if (!item || typeof suggestion.title !== 'string' || typeof suggestion.reason !== 'string') {
       return jsonResponse({ error: 'AI provider returned an unusable suggestion.' }, 502, origin);
     }

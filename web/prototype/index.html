@@ -593,6 +593,7 @@
     </div>
   </div>
 
+  <script src="../../ai-config.js"></script>
   <script src="./menu-data.js"></script>
   <script>
     const cart = new Map();
@@ -603,6 +604,7 @@
     let activeIntent = 'taste';
     let activeCategory = 'all';
     let revealObserver = null;
+    let aiRequestNumber = 0;
     const $ = id => document.getElementById(id);
     const accountModal = $('accountModal');
     function renderSiteSettings() {
@@ -676,6 +678,37 @@
       $('recommendImage').src = item.image;
       $('recommendAdd').dataset.add = item.id;
     }
+    async function requestAiRecommendation(key) {
+      const endpoint = window.CHARISMA_AI_CONFIG?.endpoint;
+      if (!endpoint) return;
+      const requestNumber = ++aiRequestNumber;
+      $('recommendText').textContent = 'جارٍ تجهيز اقتراح من ذكاء كاريزما...';
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ intent: key })
+        });
+        if (!response.ok) throw new Error(`AI request failed (${response.status}).`);
+        const recommendation = (await response.json()).recommendation;
+        const item = menu.find(product => product.id === recommendation?.itemId);
+        if (!item || typeof recommendation.title !== 'string' || typeof recommendation.reason !== 'string') {
+          throw new Error('AI response did not match the menu.');
+        }
+        if (requestNumber !== aiRequestNumber || key !== activeIntent) return;
+        $('recommendTitle').textContent = recommendation.title;
+        $('recommendText').textContent = recommendation.reason;
+        $('recommendName').textContent = item.name;
+        $('recommendPrice').textContent = `${item.price} ج.م`;
+        $('recommendImpact').textContent = `يوفر ${item.impact} نقطة أثر`;
+        $('recommendImage').src = item.image;
+        $('recommendAdd').dataset.add = item.id;
+      } catch (error) {
+        if (requestNumber !== aiRequestNumber || key !== activeIntent) return;
+        setRecommendation(key);
+        console.warn('تعذر جلب اقتراح ذكاء كاريزما؛ استُخدم الاقتراح المحلي المجاني.', error);
+      }
+    }
     function addToCart(id) {
       cart.set(id, (cart.get(id) || 0) + 1);
       renderCart();
@@ -720,9 +753,9 @@
     $('aiCloseAction').addEventListener('click', closeAi);
     aiModal.addEventListener('click', event => { if (event.target === aiModal) closeAi(); });
     $('aiAdd').addEventListener('click', () => { if (aiItem) addToCart(aiItem.id); closeAi(); });
-    document.querySelectorAll('[data-intent]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('.intent').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); activeIntent = button.dataset.intent; setRecommendation(activeIntent); showToast('اتحدّث الاقتراح المجاني حسب هدفك'); }));
+    document.querySelectorAll('[data-intent]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('.intent').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); activeIntent = button.dataset.intent; setRecommendation(activeIntent); requestAiRecommendation(activeIntent); }));
     $('recommendAdd').addEventListener('click', event => addToCart(Number(event.currentTarget.dataset.add)));
-    $('nextRecommend').addEventListener('click', () => { const keys = Object.keys(intents); const next = keys[(keys.indexOf(activeIntent) + 1) % keys.length]; activeIntent = next; setRecommendation(next); });
+    $('nextRecommend').addEventListener('click', () => { const keys = Object.keys(intents); const next = keys[(keys.indexOf(activeIntent) + 1) % keys.length]; activeIntent = next; setRecommendation(next); requestAiRecommendation(next); });
     $('startSmart').addEventListener('click', () => $('smart').scrollIntoView({ behavior: 'smooth' }));
     $('jumpMenu').addEventListener('click', () => $('menu').scrollIntoView({ behavior: 'smooth' }));
     $('openCart').addEventListener('click', () => setCart(true));

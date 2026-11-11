@@ -1,9 +1,10 @@
-const CACHE_NAME = 'charisma-loop-shell-v4';
+const CACHE_NAME = 'charisma-loop-shell-v5';
 const APP_SHELL = [
   './',
   './index.html',
   './web/prototype/index.html',
   './web/prototype/menu-data.js',
+  './ai-config.js',
   './manifest.webmanifest'
 ];
 
