@@ -530,7 +530,7 @@
       </section>
 
       <section class="section recommendation" id="recommendation">
-        <div class="recommend-copy"><div class="eyebrow"><span></span> اقتراح كاريزما ليك</div><h2 id="recommendTitle">دبل كاريزما من غير تردد</h2><p id="recommendText">اختيارك ده مناسب لذوقك، ومكوناته متاحة حاليًا. كل طلب من النوع ده بيساعدنا نقلل فائض آخر اليوم.</p><div class="recommend-actions"><button id="recommendAdd">ضيفها للسلة</button><button id="nextRecommend">اقتراح تاني</button></div></div>
+        <div class="recommend-copy"><div class="eyebrow"><span></span> اقتراح كاريزما ليك</div><h2 id="recommendTitle">اختيار من المنيو</h2><p id="recommendText">اقتراح مجاني بيتحسب على جهازك حسب هدفك وبيانات المنيو، من غير اتصال بخدمة خارجية.</p><div class="recommend-actions"><button id="recommendAdd">ضيفها للسلة</button><button id="nextRecommend">اقتراح تاني</button></div></div>
         <div class="recommend-card"><img id="recommendImage" src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=85" alt="اقتراح وجبة"><div><h3 id="recommendName">دبل كاريزما</h3><p>لحمة، شيدر، صوص مدخن وبطاطس مقرمشة.</p><div class="recommend-meta"><span id="recommendImpact">يوفر 12 نقطة أثر</span><span id="recommendPrice">135 ج.م</span></div></div></div>
       </section>
 
@@ -593,7 +593,6 @@
     </div>
   </div>
 
-  <script src="../../ai-config.js"></script>
   <script src="./menu-data.js"></script>
   <script>
     const cart = new Map();
@@ -604,7 +603,6 @@
     let activeIntent = 'taste';
     let activeCategory = 'all';
     let revealObserver = null;
-    let aiRequestNumber = 0;
     const $ = id => document.getElementById(id);
     const accountModal = $('accountModal');
     function renderSiteSettings() {
@@ -639,54 +637,44 @@
       });
     }
     function setRecommendation(key) {
-      const [title, text, id] = intents[key];
-      const item = menu.find(product => product.id === id);
-      $('recommendTitle').textContent = title;
-      $('recommendText').textContent = window.CHARISMA_AI_CONFIG?.endpoint
-        ? text
-        : `${text} (اقتراح تجريبي محلي)`;
+      const availableItems = menu.filter(item =>
+        Number.isFinite(item.price) && item.price > 0 && Number.isFinite(item.impact)
+      );
+      const rules = {
+        taste: {
+          title: 'اختيار مميز من المنيو',
+          choose: items => [...items].sort((a, b) => b.impact - a.impact)[0],
+          explain: item => `ترشيح محلي من المنيو؛ ${item.name} مسجل له ${item.impact} نقطة أثر.`
+        },
+        save: {
+          title: 'أفضل قيمة حسب نقاط الأثر',
+          choose: items => [...items].sort((a, b) => (b.impact / b.price) - (a.impact / a.price))[0],
+          explain: item => `حسب السعر ونقاط الأثر المسجلة، ${item.name} يقدم ${item.impact} نقطة أثر مقابل ${item.price} ج.م.`
+        },
+        rescue: {
+          title: 'أعلى هدر مقدر يمكن تجنبه',
+          choose: items => [...items].sort((a, b) => (b.waste || 0) - (a.waste || 0))[0],
+          explain: item => `بيانات المنيو تقدّر ${item.name} بأعلى كمية هدر يمكن تجنبها (${item.waste || 0} جم)؛ ده تقدير وليس مخزونًا مباشرًا.`
+        },
+        light: {
+          title: 'اختيار مصنف للأثر الأخف',
+          choose: items => items.find(item => item.category === 'light') ||
+            [...items].sort((a, b) => a.impact - b.impact)[0],
+          explain: item => item.category === 'light'
+            ? `${item.name} مصنف ضمن اختيارات الأثر الأخف في المنيو.`
+            : `لا يوجد صنف مصنف كأخف أثرًا في بيانات المنيو؛ ${item.name} هو الأقل في نقاط الأثر المسجلة.`
+        }
+      };
+      const rule = rules[key] || rules.taste;
+      const item = rule.choose(availableItems);
+      if (!item) return;
+      $('recommendTitle').textContent = rule.title;
+      $('recommendText').textContent = rule.explain(item);
       $('recommendName').textContent = item.name;
       $('recommendPrice').textContent = `${item.price} ج.م`;
       $('recommendImpact').textContent = `يوفر ${item.impact} نقطة أثر`;
       $('recommendImage').src = item.image;
       $('recommendAdd').dataset.add = item.id;
-    }
-    async function requestAiRecommendation(key) {
-      const endpoint = window.CHARISMA_AI_CONFIG?.endpoint;
-      if (!endpoint) return;
-
-      const requestNumber = ++aiRequestNumber;
-      $('recommendText').textContent = 'جارٍ تجهيز اقتراح مناسب من المنيو...';
-      try {
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ intent: key })
-        });
-        if (!response.ok) throw new Error(`AI request failed (${response.status}).`);
-
-        const result = await response.json();
-        const recommendation = result.recommendation;
-        const item = menu.find(product => product.id === recommendation?.itemId);
-        if (!item || typeof recommendation.title !== 'string' || typeof recommendation.reason !== 'string') {
-          throw new Error('AI response did not match the menu.');
-        }
-        if (requestNumber !== aiRequestNumber || key !== activeIntent) return;
-
-        $('recommendTitle').textContent = recommendation.title;
-        $('recommendText').textContent = recommendation.reason;
-        $('recommendName').textContent = item.name;
-        $('recommendPrice').textContent = `${item.price} ج.م`;
-        $('recommendImpact').textContent = `يوفر ${item.impact} نقطة أثر`;
-        $('recommendImage').src = item.image;
-        $('recommendAdd').dataset.add = item.id;
-      } catch (error) {
-        if (requestNumber !== aiRequestNumber || key !== activeIntent) return;
-        const [, fallbackText] = intents[key];
-        $('recommendText').textContent = `${fallbackText} تعذر الاتصال بالذكاء الاصطناعي؛ هذا اقتراح تجريبي محلي.`;
-        showToast('تعذر الاتصال بخدمة الذكاء الاصطناعي.');
-        console.warn('تعذر جلب اقتراح الذكاء الاصطناعي.', error);
-      }
     }
     function addToCart(id) {
       cart.set(id, (cart.get(id) || 0) + 1);
@@ -732,9 +720,9 @@
     $('aiCloseAction').addEventListener('click', closeAi);
     aiModal.addEventListener('click', event => { if (event.target === aiModal) closeAi(); });
     $('aiAdd').addEventListener('click', () => { if (aiItem) addToCart(aiItem.id); closeAi(); });
-    document.querySelectorAll('[data-intent]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('.intent').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); activeIntent = button.dataset.intent; setRecommendation(activeIntent); requestAiRecommendation(activeIntent); if (!window.CHARISMA_AI_CONFIG?.endpoint) showToast('الاقتراح اتغير حسب هدفك'); }));
+    document.querySelectorAll('[data-intent]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('.intent').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); activeIntent = button.dataset.intent; setRecommendation(activeIntent); showToast('اتحدّث الاقتراح المجاني حسب هدفك'); }));
     $('recommendAdd').addEventListener('click', event => addToCart(Number(event.currentTarget.dataset.add)));
-    $('nextRecommend').addEventListener('click', () => { const keys = Object.keys(intents); const next = keys[(keys.indexOf(activeIntent) + 1) % keys.length]; activeIntent = next; setRecommendation(next); requestAiRecommendation(next); });
+    $('nextRecommend').addEventListener('click', () => { const keys = Object.keys(intents); const next = keys[(keys.indexOf(activeIntent) + 1) % keys.length]; activeIntent = next; setRecommendation(next); });
     $('startSmart').addEventListener('click', () => $('smart').scrollIntoView({ behavior: 'smooth' }));
     $('jumpMenu').addEventListener('click', () => $('menu').scrollIntoView({ behavior: 'smooth' }));
     $('openCart').addEventListener('click', () => setCart(true));
