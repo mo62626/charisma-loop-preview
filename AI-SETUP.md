@@ -2,11 +2,13 @@
 
 يبقى الموقع منشورًا من GitHub Pages. يستدعي المتصفح Cloudflare Worker، والـWorker وحده يحتفظ بمفتاح Gemini.
 
-## 1. تفعيل GitHub Pages
+## 1. موقع GitHub Pages
 
-من مستودع `mo62626/charisma-loop-preview` افتح **Settings → Pages**، واختر **GitHub Actions** في **Build and deployment → Source** قبل أول نشر. بعد دفع ملفات الإعداد هذه، راقب تشغيل workflow باسم **Deploy static preview to GitHub Pages**. رابط الموقع المتوقع:
+المستودع يستخدم نشر GitHub Pages التلقائي. رابط الموقع:
 
 `https://mo62626.github.io/charisma-loop-preview/`
+
+بعد دفع تغيير `ai-config.js`، انتظر نجاح **pages build and deployment** في تبويب Actions قبل فتح الموقع.
 
 ## 2. إنشاء مفتاح Gemini
 
