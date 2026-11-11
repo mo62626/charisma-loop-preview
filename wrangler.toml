@@ -1,0 +1,14 @@
+name = "charisma-loop-ai"
+main = "worker/index.js"
+compatibility_date = "2026-11-11"
+
+[vars]
+ALLOWED_ORIGIN = "https://mo62626.github.io"
+
+[[ratelimits]]
+name = "AI_LIMITER"
+namespace_id = "91420261111"
+
+  [ratelimits.simple]
+  limit = 5
+  period = 60
