@@ -10,7 +10,7 @@
   ].join(',');
 
   const notice = document.createElement('aside');
-  notice.textContent = 'معاينة تجريبية فقط: لا تُدخل اسمًا أو بريدًا أو رقم هاتف أو كلمة مرور حقيقية. الحسابات غير مفعّلة ولا يوجد خادم.';
+  notice.textContent = 'معاينة تجريبية: لا تُدخل اسمًا أو بريدًا أو رقم هاتف أو كلمة مرور حقيقية. الحسابات والطلبات غير مفعّلة.';
   notice.setAttribute('role', 'note');
   notice.style.cssText = 'position:sticky;top:0;z-index:9999;padding:10px 16px;background:#fff0bd;color:#171717;border-bottom:1px solid #d5bd71;text-align:center;font:700 13px/1.6 Arial,sans-serif';
   document.body.prepend(notice);

@@ -51,9 +51,21 @@
       width: 48px; height: 48px; display: grid; place-items: center;
       color: var(--paper); background: var(--red); border: 4px solid var(--ink);
       border-radius: 50%; box-shadow: 5px 5px 0 var(--yellow); transform: rotate(-6deg);
+      position: relative; isolation: isolate;
       font-size: 24px; font-weight: 900;
     }
-    .brand strong { display: block; font-size: 22px; line-height: 1; }
+    .mark::before, .mark::after {
+      content: ""; position: absolute; z-index: -1; left: 7px; right: 7px;
+      height: 4px; border-radius: 999px; background: var(--yellow);
+      box-shadow: 0 2px 0 rgba(23,23,23,.22);
+    }
+    .mark::before { top: 8px; }
+    .mark::after { bottom: 8px; }
+    .brand strong {
+      display: block; font-size: 22px; line-height: 1;
+      transform: rotate(-2deg) skewX(-5deg);
+      text-shadow: 1px 2px 0 var(--yellow), 2px 3px 0 var(--red);
+    }
     .brand small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; font-weight: 800; }
     .top-actions { display: flex; align-items: center; gap: 10px; }
     .support-link { padding: 9px 12px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 11px; font-size: 11px; font-weight: 900; text-decoration: none; }
@@ -756,7 +768,8 @@
           <span>هدر متجنب تقديريًا<strong id="impactCardWaste"></strong></span>
         </div>
       </section>
-      <p class="chat-privacy" id="chatPrivacy">رسالتك وسياق قصير من المحادثة يُرسلان إلى Cloudflare Workers AI للإجابة. عنوان IP يستخدمه Worker لتحديد معدل الطلبات فقط. لا ترسل اسمًا أو بريدًا أو رقم هاتف أو كلمة مرور أو رقم/كود طلب أو كود أثر. المحادثة مؤقتة في هذه الصفحة ولا تُحفظ.</p>
+      <p class="chat-privacy" id="chatPrivacy">سؤالك يُرسل إلى Cloudflare Workers AI للإجابة. لا تكتب معلومات شخصية أو أكواد طلبات هنا.</p>
+      <a class="chat-privacy" href="support.html#ticketForm">عايز تبعت رسالة للمطعم؟</a>
     </div>
     <form class="chat-form" id="chatForm">
       <label for="chatInput">سؤالك</label>
@@ -1010,7 +1023,6 @@
     const chatTranscript = $('chatTranscript');
     const chatStatus = $('chatStatus');
     const chatSend = $('chatSend');
-    const chatMessages = [];
     let pendingChatMessages = null;
     let pendingChatQuestion = '';
     let chatBusy = false;
@@ -1103,8 +1115,6 @@
           throw new Error('لم تصل إجابة آمنة للاستخدام. يمكنك إعادة المحاولة.');
         }
         appendChatMessage('assistant', result.answer.trim());
-        chatMessages.splice(0, chatMessages.length, ...messages, { role: 'assistant', content: result.answer.trim() });
-        while (chatMessages.length > 6) chatMessages.shift();
         if (chatInput.value === pendingChatQuestion) chatInput.value = '';
         pendingChatMessages = null;
         pendingChatQuestion = '';
@@ -1127,7 +1137,7 @@
         return;
       }
       pendingChatQuestion = question;
-      const messages = [...chatMessages.slice(-2), { role: 'user', content: question }];
+      const messages = [{ role: 'user', content: question }];
       appendChatMessage('user', question);
       chatInput.value = '';
       setChatStatus('');

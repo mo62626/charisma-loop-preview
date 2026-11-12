@@ -53,7 +53,7 @@ export default {
       return jsonResponse({ error: 'Origin not allowed.' }, 403);
     }
 
-    if (url.pathname !== '/recommend' && url.pathname !== '/chat') {
+    if (url.pathname !== '/recommend' && url.pathname !== '/chat' && url.pathname !== '/contact') {
       return jsonResponse({ error: 'Not found.' }, 404, origin);
     }
 
@@ -74,7 +74,7 @@ export default {
       return jsonResponse({ error: 'Method not allowed.' }, 405, origin);
     }
 
-    const bodyLimit = url.pathname === '/chat' ? 6000 : 1024;
+    const bodyLimit = url.pathname === '/chat' ? 6000 : url.pathname === '/contact' ? 2048 : 1024;
     const declaredLength = Number(request.headers.get('Content-Length') || 0);
     if (declaredLength > bodyLimit) {
       return jsonResponse({ error: 'Request is too large.' }, 413, origin);
@@ -103,7 +103,19 @@ export default {
     }
 
     let chatMessages = null;
-    if (url.pathname === '/chat') {
+    let contactRequest = null;
+    if (url.pathname === '/contact') {
+      if (!payload || payload.consent !== true ||
+          !['menu', 'support', 'feedback', 'sustainability'].includes(payload.topic) ||
+          typeof payload.message !== 'string') {
+        return jsonResponse({ error: 'Invalid contact request.' }, 400, origin);
+      }
+      const message = payload.message.trim();
+      if (!message || message.length > 500 || containsSensitiveDetails(message)) {
+        return jsonResponse({ error: 'Remove personal details and keep the message under 500 characters.' }, 400, origin);
+      }
+      contactRequest = { message, topic: payload.topic };
+    } else if (url.pathname === '/chat') {
       if (!payload || !Array.isArray(payload.messages) || payload.messages.length < 1 || payload.messages.length > 6) {
         return jsonResponse({ error: 'Invalid chat messages.' }, 400, origin);
       }
@@ -131,7 +143,7 @@ export default {
       return jsonResponse({ error: 'Invalid intent.' }, 400, origin);
     }
 
-    if (!env.AI) {
+    if (url.pathname !== '/contact' && !env.AI) {
       return jsonResponse({ error: 'AI service is not configured.' }, 503, origin);
     }
 
@@ -143,6 +155,51 @@ export default {
     const { success } = await env.AI_LIMITER.limit({ key: clientIp });
     if (!success) {
       return jsonResponse({ error: 'Too many requests. Please try again later.' }, 429, origin);
+    }
+
+    if (url.pathname === '/contact') {
+      const webhookValue = env.RESTAURANT_WEBHOOK_URL;
+      if (typeof webhookValue !== 'string' || !webhookValue.trim()) {
+        return jsonResponse({ error: 'Restaurant messaging is not configured yet.' }, 503, origin);
+      }
+
+      let webhook;
+      try {
+        webhook = new URL(webhookValue);
+      } catch {
+        return jsonResponse({ error: 'Restaurant messaging is not configured correctly.' }, 503, origin);
+      }
+      const webhookHost = webhook.hostname.toLowerCase();
+      const webhookHostIsIp = webhookHost.includes(':') || /^\d{1,3}(?:\.\d{1,3}){3}$/.test(webhookHost);
+      if (webhook.protocol !== 'https:' || !webhookHost.includes('.') || webhookHostIsIp ||
+          webhook.username || webhook.password || (webhook.port && webhook.port !== '443') ||
+          webhookHost === 'localhost' || webhookHost.endsWith('.localhost') ||
+          webhookHost.endsWith('.local') || webhookHost.endsWith('.internal')) {
+        return jsonResponse({ error: 'Restaurant messaging is not configured correctly.' }, 503, origin);
+      }
+
+      try {
+        const delivery = await fetch(webhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            source: 'charisma-loop',
+            topic: contactRequest.topic,
+            message: contactRequest.message,
+            submittedAt: new Date().toISOString()
+          }),
+          redirect: 'manual',
+          signal: AbortSignal.timeout(8000)
+        });
+        if (!delivery.ok) {
+          console.error('Restaurant webhook rejected a customer message.', delivery.status);
+          return jsonResponse({ error: 'Restaurant messaging could not accept the message. Please try again.' }, 502, origin);
+        }
+      } catch (error) {
+        console.error('Restaurant webhook delivery failed.');
+        return jsonResponse({ error: 'Restaurant messaging is temporarily unavailable. Please try again.' }, 502, origin);
+      }
+      return jsonResponse({ accepted: true }, 202, origin);
     }
 
     if (url.pathname === '/chat') {

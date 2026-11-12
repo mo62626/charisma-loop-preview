@@ -81,22 +81,20 @@
     </section>
     <section class="card" style="margin-top:12px">
       <h2>افتح طلب دعم</h2>
-      <p>التذكرة التجريبية تحفظ على الجهاز. في النسخة التجارية تصل مباشرة لفريق المطعم مع رقم الطلب.</p>
+      <p>اكتب رسالتك بنفسك ووافق على إرسالها. الإرسال للمطعم غير مفعّل حتى ربط قناة الاستقبال.</p>
       <form class="form" id="ticketForm">
-        <label for="ticketOrder">رقم الطلب إن وجد</label>
-        <input id="ticketOrder" placeholder="CHR-123456" autocomplete="off">
         <label for="ticketType">نوع المشكلة</label>
-        <select id="ticketType"><option>تأخير الطلب</option><option>صنف ناقص</option><option>صنف غير صحيح</option><option>مشكلة في النقاط أو المكافآت</option><option>اقتراح أو ملاحظة</option></select>
+        <select id="ticketType"><option value="support">مشكلة أو مساعدة</option><option value="menu">سؤال عن المنيو</option><option value="sustainability">ملاحظة عن الأثر والاستدامة</option><option value="feedback">اقتراح أو ملاحظة</option></select>
         <label for="ticketMessage">اكتب التفاصيل</label>
-        <textarea id="ticketMessage" required placeholder="قول لنا حصل إيه بالتفصيل"></textarea>
-        <button class="primary" type="submit">إرسال للدعم</button>
+        <textarea id="ticketMessage" required maxlength="500" placeholder="اكتب رسالتك للمطعم من غير اسم أو رقم هاتف أو كود طلب"></textarea>
+        <label><input id="ticketConsent" type="checkbox" required> أوافق على إرسال هذه الرسالة إلى المطعم عند تفعيل قناة الاستقبال.</label>
+        <button class="primary" type="submit">إرسال للمطعم</button>
       </form>
-      <div class="message" id="ticketResult"></div>
+      <div class="message" id="ticketResult" role="status" aria-live="polite"></div>
     </section>
-    <p class="note">ميزة تميز كاريزما: كل مشكلة لها رقم تذكرة واضح، ويمكن ربطها برقم الطلب والنقاط والأثر. هذا يجعل الدعم جزءًا من تجربة الطلب وليس صفحة منفصلة منسية.</p>
+    <p class="note">إرسال الرسائل للمطعم يتطلب إعداد قناة استقبال أولًا. لا تكتب اسمك أو بياناتك الخاصة أو رقم طلبك في الرسالة.</p>
   </main>
   <script>
-    const savedOrder = JSON.parse(localStorage.getItem('charisma-last-order') || 'null');
     const $ = id => document.getElementById(id);
     const helpText = {
       late: 'اتصل بـ 11111 واذكر رقم الطلب. لو الطلب محفوظ على الجهاز، افتح التتبع من الزر التالي بعد كتابة الرقم.',
@@ -111,17 +109,41 @@
       if (!code) return $('trackMessage').textContent = 'اكتب رقم الطلب الأول.';
       window.location.href = `order-tracking.html?order=${encodeURIComponent(code)}`;
     });
-    if (savedOrder && savedOrder.orderCode) { $('orderCode').value = savedOrder.orderCode; $('ticketOrder').value = savedOrder.orderCode; }
-    $('ticketForm').addEventListener('submit', event => {
+    $('ticketForm').addEventListener('submit', async event => {
       event.preventDefault();
-      const tickets = JSON.parse(localStorage.getItem('charisma-support-tickets') || '[]');
-      const ticket = { id: `SUP-${Math.floor(100000 + Math.random() * 900000)}`, orderCode: $('ticketOrder').value.trim().toUpperCase(), type: $('ticketType').value, message: $('ticketMessage').value.trim(), createdAt: new Date().toISOString(), status: 'new' };
-      tickets.push(ticket);
-      localStorage.setItem('charisma-support-tickets', JSON.stringify(tickets));
-      $('ticketResult').textContent = `تم فتح التذكرة ${ticket.id}. اتصل بـ 11111 واذكر الرقم لو المشكلة عاجلة.`;
-      event.currentTarget.reset();
+      const result = $('ticketResult');
+      const submit = event.currentTarget.querySelector('button[type="submit"]');
+      const endpoint = window.CHARISMA_AI_CONFIG && window.CHARISMA_AI_CONFIG.contactEndpoint;
+      if (!endpoint) {
+        result.textContent = 'إرسال الرسائل غير متاح حاليًا. لم نرسل رسالتك.';
+        return;
+      }
+      submit.disabled = true;
+      result.textContent = 'جارٍ إرسال رسالتك...';
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            topic: $('ticketType').value,
+            message: $('ticketMessage').value.trim(),
+            consent: $('ticketConsent').checked
+          })
+        });
+        if (response.status === 503) throw new Error('قناة استقبال المطعم غير مفعّلة بعد. لم نرسل رسالتك.');
+        if (response.status === 429) throw new Error('وصلت لحد الإرسال المؤقت. انتظر قليلًا ثم حاول مجددًا.');
+        if (response.status === 400) throw new Error('راجع موافقتك واحذف أي بيانات شخصية أو أكواد من الرسالة.');
+        if (!response.ok) throw new Error('تعذر إرسال الرسالة. لم نؤكد استلامها، حاول مجددًا لاحقًا.');
+        result.textContent = 'وصلت رسالتك إلى قناة المطعم.';
+        event.currentTarget.reset();
+      } catch (error) {
+        result.textContent = error instanceof Error ? error.message : 'تعذر إرسال الرسالة. حاول مجددًا.';
+      } finally {
+        submit.disabled = false;
+      }
     });
   </script>
+  <script src="../../ai-config.js"></script>
   <script src="./preview-guard.js"></script>
 </body>
 </html>
