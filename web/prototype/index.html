@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ef3d2f">
-  <meta name="description" content="كاريزما لوب: اطلب بذكاء وسيب أثر أحسن.">
+  <meta name="description" content="كاريزما لوب: اطلب وسيب أثر حسن.">
   <link rel="manifest" href="../../manifest.webmanifest">
-  <title>كاريزما لوب | اطلب بذكاء</title>
+  <title>كاريزما لوب | اطلب وسيب أثر حسن</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Changa:wght@600;700;800&display=swap');
     :root {
@@ -27,6 +27,7 @@
       background:
         radial-gradient(circle at 8% 8%, rgba(255, 201, 40, .25), transparent 25rem),
         radial-gradient(circle at 92% 18%, rgba(47, 125, 88, .16), transparent 24rem),
+        radial-gradient(circle at 50% 48%, rgba(239, 61, 47, .07), transparent 30rem),
         var(--paper);
       font-family: Cairo, Arial, sans-serif;
     }
@@ -195,6 +196,19 @@
       color: var(--green);
       font-size: .55em;
       transform: translateY(-50%) rotate(9deg);
+    }
+    .hero-title .impact-line::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      right: 12px;
+      bottom: 1px;
+      width: min(80%, 390px);
+      height: .34em;
+      border-radius: 999px;
+      background: rgba(255, 201, 40, .78);
+      transform: rotate(-2deg);
+      pointer-events: none;
     }
     .hero-copy > p { max-width: 470px; margin: 22px 0 27px; color: var(--muted); font-size: 17px; font-weight: 700; line-height: 1.9; }
     .hero-cta { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -649,7 +663,7 @@
           <h1 class="hero-title">
             <span class="hungry">جعان؟</span>
             <span class="brand-word">كاريزما</span>
-            <span class="impact-line"><span><span class="impact-prefix">و</span>سيب أثر حسن</span><button class="points-badge" id="pointsBadge" type="button" aria-label="فتح حساب نقاط الأثر"><strong id="heroPoints">0</strong><small id="heroPointsLabel">نقطة أثر<br>مجمعة</small></button></span>
+            <span class="impact-line"><span>اطلب وسيب أثر حسن</span><button class="points-badge" id="pointsBadge" type="button" aria-label="فتح حساب نقاط الأثر"><strong id="heroPoints">0</strong><small id="heroPointsLabel">نقطة أثر<br>مجمعة</small></button></span>
           </h1>
           <p id="heroDescription">استكشف المنيو وأسعاره، وشوف نقاط الأثر والهدر المقدرة لكل صنف. الطلب والمخزون هنا تجريبيان.</p>
           <div class="hero-cta"><button class="primary" id="startSmart">اعملّي وجبتي</button><button class="secondary" id="jumpMenu">شوف المنيو</button></div>
@@ -749,9 +763,9 @@
       <button class="chat-close" id="chatClose" type="button" aria-label="إغلاق المحادثة">×</button>
     </header>
     <div class="chat-body">
-      <p class="chat-intro">اسأل عن المنيو أو المكافآت أو صفحات الموقع. الإجابات من معلومات النسخة التجريبية فقط.</p>
+      <p class="chat-intro">بائعك الذكي يساعدك تختار من المنيو ويفهمك الأثر والمكافآت. الطلب والأرقام في هذه النسخة تجريبية.</p>
       <div class="chat-transcript" id="chatTranscript" role="log" aria-live="polite" aria-relevant="additions text">
-        <div class="chat-message assistant" dir="auto">أهلًا! أقدر أشرح لك المنيو، نقاط الأثر التقديرية، المكافآت وصفحات الموقع.</div>
+        <div class="chat-message assistant" dir="auto">أهلًا! احكيلي بتحب إيه، وأساعدك تختار. أقدر كمان أوضح لك الأثر والمكافآت والسعرات التقديرية.</div>
       </div>
       <div class="chat-status" id="chatStatus" role="status" aria-live="polite"></div>
       <section class="impact-explorer" aria-labelledby="impactExplorerTitle">
@@ -1103,7 +1117,7 @@
           method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages })
+          body: JSON.stringify({ page: 'menu', messages })
         });
         if (!response.ok) {
           if (response.status === 429) throw new Error('وصلت لحد الاستخدام المؤقت. انتظر قليلًا ثم أعد المحاولة.');
@@ -1190,6 +1204,8 @@
       revealTargets.forEach(target => target.classList.add('is-visible'));
     }
   </script>
+  <script src="./nutrition-data.js"></script>
+  <script src="./ai-assistant.js"></script>
   <script src="./preview-guard.js"></script>
 </body>
 </html>

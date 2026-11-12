@@ -1,9 +1,15 @@
-const CACHE_NAME = 'charisma-loop-shell-v7';
+const CACHE_NAME = 'charisma-loop-shell-v8';
 const APP_SHELL = [
   './',
   './index.html',
   './web/prototype/index.html',
+  './web/prototype/account.html',
+  './web/prototype/order-tracking.html',
+  './web/prototype/support.html',
+  './web/prototype/impact-redeem.html',
   './web/prototype/menu-data.js',
+  './web/prototype/nutrition-data.js',
+  './web/prototype/ai-assistant.js',
   './ai-config.js',
   './manifest.webmanifest'
 ];
