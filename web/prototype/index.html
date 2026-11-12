@@ -284,6 +284,7 @@
     .impact-explainer h3 { margin: 0 0 7px; color: #1d5c3e; font-size: 17px; }
     .impact-explainer p { margin: 0; color: #3f3a34; font-size: 13px; line-height: 1.8; font-weight: 800; }
     .impact-explainer-title { margin: 26px 0 0; color: var(--ink); font-size: 24px; }
+    .menu-demo-note { margin: 12px 0 0; color: var(--muted); font-size: 11px; font-weight: 700; line-height: 1.7; }
     .category-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
     .category-tab { padding: 9px 13px; color: var(--ink); background: #f0ece4; border-radius: 999px; font-size: 12px; font-weight: 900; }
     .category-tab.active { color: var(--paper); background: var(--ink); }
@@ -304,6 +305,7 @@
     .summary-line { display: flex; justify-content: space-between; margin-bottom: 9px; font-weight: 800; }
     .summary-line.total { margin-top: 14px; color: var(--red); font-size: 22px; }
     .checkout { width: 100%; margin-top: 13px; padding: 14px; color: var(--paper); background: var(--red); border-radius: 13px; font-weight: 900; }
+    .cart-demo-note { margin: 10px 0 0; color: var(--muted); font-size: 10px; font-weight: 800; line-height: 1.6; }
     .scrim { position: fixed; inset: 0; z-index: 35; background: rgba(23,23,23,.45); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
     .scrim.open { opacity: 1; pointer-events: auto; }
     .toast { position: fixed; right: 24px; bottom: 24px; z-index: 60; max-width: 340px; padding: 12px 16px; color: var(--paper); background: var(--ink); border-radius: 12px; font-weight: 800; opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
@@ -452,6 +454,136 @@
       font-size: 12px;
       font-weight: 900;
     }
+    .chat-launcher {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 75;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 13px 17px;
+      color: var(--ink);
+      background: var(--yellow);
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      box-shadow: 4px 4px 0 var(--ink);
+      font-weight: 900;
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+    .chat-launcher:hover { transform: translateY(-2px); box-shadow: 5px 6px 0 var(--ink); }
+    .chat-launcher:active { transform: translateY(1px) scale(.98); box-shadow: 2px 2px 0 var(--ink); }
+    .chat-launcher:focus-visible, .chat-panel button:focus-visible, .chat-panel input:focus-visible, .chat-panel select:focus-visible {
+      outline: 3px solid var(--green);
+      outline-offset: 3px;
+    }
+    .chat-launcher-mark {
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      color: var(--paper);
+      background: var(--red);
+      border: 1px solid var(--ink);
+      border-radius: 9px;
+      font-size: 14px;
+    }
+    .chat-panel[hidden] { display: none !important; }
+    .chat-panel {
+      position: fixed;
+      right: 20px;
+      bottom: 82px;
+      z-index: 76;
+      display: flex;
+      flex-direction: column;
+      width: min(390px, calc(100vw - 32px));
+      max-height: min(650px, calc(100dvh - 112px));
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--card);
+      border: 2px solid var(--ink);
+      border-radius: 20px;
+      box-shadow: 8px 8px 0 var(--yellow);
+    }
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      color: var(--paper);
+      background: var(--ink);
+      border-bottom: 4px solid var(--red);
+    }
+    .chat-title { display: flex; align-items: center; gap: 10px; }
+    .chat-title-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      color: var(--ink);
+      background: var(--yellow);
+      border: 2px solid var(--paper);
+      border-radius: 13px;
+      font-weight: 900;
+    }
+    .chat-title h2 { margin: 0; font-size: 17px; }
+    .chat-title p { margin: 2px 0 0; color: #e2dacf; font-size: 10px; font-weight: 700; }
+    .chat-close { width: 36px; height: 36px; color: var(--paper); background: transparent; border: 1px solid rgba(255,255,255,.4); border-radius: 11px; font-size: 20px; }
+    .chat-body { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 12px; overflow-y: auto; padding: 14px; overscroll-behavior: contain; }
+    .chat-intro { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .chat-transcript { display: grid; gap: 8px; }
+    .chat-message { max-width: 92%; padding: 10px 12px; border-radius: 14px; font-size: 12px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; animation: chat-pop .2s ease-out both; }
+    .chat-message.assistant { justify-self: start; background: #fff3cd; border: 1px solid rgba(23,23,23,.1); border-bottom-right-radius: 5px; }
+    .chat-message.user { justify-self: end; color: var(--paper); background: var(--green); border-bottom-left-radius: 5px; }
+    .chat-status { min-height: 20px; color: var(--muted); font-size: 11px; }
+    .chat-status:empty { display: none; }
+    .chat-loading { display: inline-flex; align-items: center; gap: 4px; padding: 8px 11px; background: #fff3cd; border-radius: 12px; }
+    .chat-loading span { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: chat-bob .7s ease-in-out infinite alternate; }
+    .chat-loading span:nth-child(2) { animation-delay: .12s; }
+    .chat-loading span:nth-child(3) { animation-delay: .24s; }
+    .chat-retry { margin-inline-start: 5px; padding: 3px 8px; color: var(--paper); background: var(--red); border-radius: 8px; font-weight: 800; }
+    .impact-explorer {
+      padding: 11px;
+      background: #e8f3e8;
+      border: 1px solid rgba(47,125,88,.25);
+      border-radius: 15px;
+    }
+    .impact-explorer-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .impact-explorer h3 { margin: 0; font-size: 12px; }
+    .impact-explorer-tag { padding: 4px 7px; color: var(--paper); background: var(--green); border-radius: 8px; font-size: 9px; font-weight: 900; }
+    .impact-explorer p { margin: 6px 0 9px; color: #3f3a34; font-size: 10px; line-height: 1.6; }
+    .impact-explorer-controls { display: flex; gap: 8px; align-items: center; }
+    .impact-explorer-controls select { min-width: 0; flex: 1; padding: 8px; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 9px; font: inherit; font-size: 10px; }
+    .impact-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px 10px;
+      margin-top: 9px;
+      padding: 9px 10px;
+      background: var(--card);
+      border: 1px dashed rgba(23,23,23,.25);
+      border-radius: 10px;
+    }
+    .impact-card[hidden] { display: none !important; }
+    .impact-card-name { grid-column: 1 / -1; color: var(--red); font-size: 11px; font-weight: 900; }
+    .impact-card span { color: var(--muted); font-size: 9px; font-weight: 700; }
+    .impact-card strong { display: block; color: var(--green); font-size: 13px; }
+    .impact-card.reveal { animation: impact-reveal .34s cubic-bezier(.16,1,.3,1) both; }
+    .chat-privacy { margin: 0; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .chat-form { display: grid; grid-template-columns: 1fr auto; gap: 7px; padding: 0 14px 14px; }
+    .chat-form label { grid-column: 1 / -1; font-size: 10px; font-weight: 900; }
+    .chat-form input { width: 100%; min-width: 0; padding: 10px; color: var(--ink); background: white; border: 1px solid rgba(23,23,23,.3); border-radius: 10px; font: inherit; font-size: 12px; }
+    .chat-send { padding: 9px 13px; color: var(--paper); background: var(--green); border: 1px solid var(--ink); border-radius: 10px; font-size: 11px; font-weight: 900; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .chat-send:disabled { opacity: .6; }
+    @keyframes chat-pop { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes chat-bob { to { transform: translateY(-3px); opacity: .55; } }
+    @keyframes impact-reveal { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @media (prefers-reduced-motion: reduce) {
+      .chat-message, .chat-loading span, .impact-card.reveal { animation: none; }
+      .chat-launcher { transition: none; }
+    }
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; min-height: 0; }
       .hero-copy { padding-top: 28px; }
@@ -480,6 +612,8 @@
       .impact-strip { grid-template-columns: 1fr; }
       .impact-explainer { grid-template-columns: 1fr; }
       .toast { right: 16px; bottom: 16px; left: 16px; max-width: none; text-align: center; }
+      .chat-launcher { right: 14px; bottom: 14px; }
+      .chat-panel { right: 14px; bottom: 72px; max-height: calc(100dvh - 90px); }
     }
   </style>
 </head>
@@ -499,22 +633,22 @@
       <div class="promo-banner" id="promoBanner" hidden></div>
       <section class="hero">
         <div class="hero-copy">
-          <div class="eyebrow"><span></span> <span id="heroEyebrow">الذكاء الاصطناعي بيظبطها على مزاجك</span></div>
+          <div class="eyebrow"><span></span> <span id="heroEyebrow">منيو واضح وأثر تقديري</span></div>
           <h1 class="hero-title">
             <span class="hungry">جعان؟</span>
             <span class="brand-word">كاريزما</span>
             <span class="impact-line"><span><span class="impact-prefix">و</span>سيب أثر حسن</span><button class="points-badge" id="pointsBadge" type="button" aria-label="فتح حساب نقاط الأثر"><strong id="heroPoints">0</strong><small id="heroPointsLabel">نقطة أثر<br>مجمعة</small></button></span>
           </h1>
-          <p id="heroDescription">كاريزما لوب بتفهم ذوقك، وتختار لك وجبة مناسبة للمخزون الحالي عشان الأكل الحلو مايروحش هدر.</p>
+          <p id="heroDescription">استكشف المنيو وأسعاره، وشوف نقاط الأثر والهدر المقدرة لكل صنف. الطلب والمخزون هنا تجريبيان.</p>
           <div class="hero-cta"><button class="primary" id="startSmart">اعملّي وجبتي</button><button class="secondary" id="jumpMenu">شوف المنيو</button></div>
         </div>
         <div class="hero-stage">
           <div class="orbit"></div>
-          <div class="floating-note note-one"><strong>92%</strong><span>تطابق مع ذوقك</span></div>
-          <div class="floating-note note-two"><strong>1.8 كجم</strong><span>هدر تم إنقاذه اليوم</span></div>
+          <div class="floating-note note-one"><strong>تقديري</strong><span>نقاط الأثر من بيانات المنيو</span></div>
+          <div class="floating-note note-two"><strong>تجريبي</strong><span>ليس مخزونًا مباشرًا</span></div>
           <article class="hero-card">
             <div class="hero-image"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85" alt="برجر كاريزما"><div class="ai-badge"><b>AI</b> اقتراح لحظي</div></div>
-            <div class="hero-card-foot"><div><h2>جرّب إنقاذ اليوم</h2><p>وجبة معمولة من مكونات متاحة دلوقتي</p></div><div class="impact-score"><strong>+18</strong><small>نقطة أثر</small></div></div>
+            <div class="hero-card-foot"><div><h2>دبل كاريزما</h2><p>135 ج.م حسب بيانات المنيو التجريبي</p></div><div class="impact-score"><strong>18</strong><small>نقطة أثر تجريبية</small></div></div>
           </article>
         </div>
       </section>
@@ -522,16 +656,16 @@
       <section class="section" id="smart">
         <div class="section-head"><h2>إيه أهم حاجة عندك؟</h2><p>اختار هدفك للحصول على اقتراح مناسب من المنيو.</p></div>
         <div class="intent-grid">
-          <button class="intent selected" data-intent="taste"><div class="intent-icon">●</div><h3>على مزاجي</h3><p>اقتراح قريب من طلباتك المفضلة.</p></button>
-          <button class="intent" data-intent="save"><div class="intent-icon">↘</div><h3>أوفر فلوس</h3><p>أفضل وجبة مقابل الميزانية.</p></button>
-          <button class="intent" data-intent="rescue"><div class="intent-icon">♻</div><h3>أنقذ فائض</h3><p>استخدم مكونات متاحة بدل ما تهدر.</p></button>
+          <button class="intent selected" data-intent="taste"><div class="intent-icon">●</div><h3>شوف اقتراحًا</h3><p>صنف من المنيو حسب نقاط الأثر المسجلة.</p></button>
+          <button class="intent" data-intent="save"><div class="intent-icon">↘</div><h3>قارن الأثر بالسعر</h3><p>شوف نقاط الأثر المسجلة مقارنة بالسعر.</p></button>
+          <button class="intent" data-intent="rescue"><div class="intent-icon">♻</div><h3>اكتشف تقدير الهدر</h3><p>اعرف تقدير الهدر المسجل في بيانات المنيو.</p></button>
           <button class="intent" data-intent="light"><div class="intent-icon">✦</div><h3>أخف أثر</h3><p>اختيارات بتغليف وأثر أقل.</p></button>
         </div>
       </section>
 
       <section class="section recommendation" id="recommendation">
-        <div class="recommend-copy"><div class="eyebrow"><span></span> اقتراح كاريزما ليك</div><h2 id="recommendTitle">اختيار من المنيو</h2><p id="recommendText">اقتراح مجاني بيتحسب على جهازك حسب هدفك وبيانات المنيو، من غير اتصال بخدمة خارجية.</p><div class="recommend-actions"><button id="recommendAdd">ضيفها للسلة</button><button id="nextRecommend">اقتراح تاني</button></div></div>
-        <div class="recommend-card"><img id="recommendImage" src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=85" alt="اقتراح وجبة"><div><h3 id="recommendName">دبل كاريزما</h3><p>لحمة، شيدر، صوص مدخن وبطاطس مقرمشة.</p><div class="recommend-meta"><span id="recommendImpact">يوفر 12 نقطة أثر</span><span id="recommendPrice">135 ج.م</span></div></div></div>
+        <div class="recommend-copy"><div class="eyebrow"><span></span> اقتراح من المنيو التجريبي</div><h2 id="recommendTitle">اختيار من المنيو</h2><p id="recommendText">الاقتراح مبني على بيانات المنيو. الأثر والهدر تقديريان وليسا مخزونًا مباشرًا.</p><div class="recommend-actions"><button id="recommendAdd">ضيفها للسلة</button><button id="nextRecommend">اقتراح تاني</button></div></div>
+        <div class="recommend-card"><img id="recommendImage" src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=85" alt="اقتراح وجبة"><div><h3 id="recommendName">دبل كاريزما</h3><p>قطعتين لحمة مع جبنة شيدر وصوص مدخن.</p><div class="recommend-meta"><span id="recommendImpact">18 نقطة أثر تجريبية</span><span id="recommendPrice">135 ج.م</span></div></div></div>
       </section>
 
       <section class="section" id="menu">
@@ -545,20 +679,21 @@
           <button class="category-tab" data-category="offers">العروض</button>
         </div>
         <div class="menu-grid" id="menuGrid"></div>
-        <div class="impact-strip"><div class="impact-item"><strong id="impactMeals">0</strong><span>وجبة ساعدت في تقليل الهدر</span></div><div class="impact-item"><strong id="impactPoints">0</strong><span>نقطة أثر من طلبك</span></div><div class="impact-item"><strong id="impactWaste">0 جم</strong><span>هدر تم تجنبه تقديريًا</span></div></div>
+        <div class="impact-strip"><div class="impact-item"><strong id="impactMeals">0</strong><span>أصناف في سلة الديمو</span></div><div class="impact-item"><strong id="impactPoints">0</strong><span>نقاط أثر مسجلة في السلة</span></div><div class="impact-item"><strong id="impactWaste">0 جم</strong><span>هدر متجنب تقديريًا</span></div></div>
+        <p class="menu-demo-note">المنيو والسلة والطلب تجريبية. لا يوجد مخزون مباشر أو طلب فعلي للمطعم، وأرقام الأثر والهدر تقديرية وليست قياسًا بيئيًا.</p>
         <h3 class="impact-explainer-title">أثرك ببساطة</h3>
         <div class="impact-explainer" aria-label="شرح مؤشرات الأثر">
           <article>
             <h3>يعني إيه هدر تم تجنبه؟</h3>
-            <p>تقدير لكمية مكونات متاحة كان ممكن تفضل بدون استخدام، واختيارك ساعد المطعم يستخدمها في وجبة بدل التخلص منها.</p>
+            <p>رقم تقديري مسجل للصنف في بيانات المنيو التجريبية، وليس وزنًا قيس في مطبخ فعلي.</p>
           </article>
           <article>
             <h3>يعني إيه نقاط أثر؟</h3>
-            <p>نقاط يحصل عليها العميل عندما يختار وجبة تساعد في استخدام فائض اليوم أو تقلل التغليف. النقاط تتحول لعروض بشروط واضحة.</p>
+            <p>لكل صنف نقاط أثر مسجلة في المنيو التجريبي. تعرض الصفحات مكافآت نموذجية وشروطها، ولا تمثل استبدالًا فعليًا.</p>
           </article>
           <article>
             <h3>إيه أثرها على البيئة؟</h3>
-            <p>تقليل الطعام المهدَر يقلل استهلاك الموارد المرتبطة بإنتاجه ونقله والتخلص منه. الأرقام الحالية تقديرية حتى نربطها ببيانات المطعم الفعلية.</p>
+            <p>الأرقام الظاهرة تقديرية ومبنية على بيانات المنيو التجريبية، ولا تقيس الانبعاثات أو أثرًا بيئيًا فعليًا.</p>
           </article>
         </div>
       </section>
@@ -566,15 +701,15 @@
   </div>
 
   <div class="scrim" id="scrim"></div>
-  <aside class="cart-drawer" id="cartDrawer" aria-label="سلة الطلب"><div class="cart-head"><h2>طلبك</h2><button class="close-button" id="closeCart" aria-label="إغلاق السلة">×</button></div><div class="cart-items" id="cartItems"><div class="cart-empty">السلة لسه فاضية<br>اختار حاجة تحبها</div></div><div class="cart-summary"><div class="summary-line"><span>المجموع</span><span id="subtotal">0 ج.م</span></div><div class="summary-line"><span>التوصيل</span><span id="delivery">-</span></div><div class="summary-line total"><span>الإجمالي</span><span id="total">0 ج.م</span></div><button class="checkout" id="checkout">كمل الطلب</button></div></aside>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="سلة الطلب"><div class="cart-head"><h2>طلبك</h2><button class="close-button" id="closeCart" aria-label="إغلاق السلة">×</button></div><div class="cart-items" id="cartItems"><div class="cart-empty">السلة لسه فاضية<br>اختار حاجة تحبها</div></div><div class="cart-summary"><div class="summary-line"><span>المجموع</span><span id="subtotal">0 ج.م</span></div><div class="summary-line"><span>التوصيل</span><span id="delivery">-</span></div><div class="summary-line total"><span>الإجمالي</span><span id="total">0 ج.م</span></div><button class="checkout" id="checkout">كمل الطلب التجريبي</button><p class="cart-demo-note">هذا نموذج تجريبي. لا يُرسل طلبًا للمطعم ولا يتضمن دفعًا فعليًا.</p></div></aside>
   <div class="toast" id="toast"></div>
   <div class="ai-modal" id="aiModal" aria-hidden="true">
     <article class="ai-card" role="dialog" aria-modal="true" aria-labelledby="aiTitle">
       <div class="ai-head"><div><div class="ai-label">مساعد كاريزما التجريبي</div><h2 id="aiTitle">شرح الصنف</h2></div><button class="close-button" id="closeAi" type="button" aria-label="إغلاق الشرح">×</button></div>
       <div class="ai-image"><img id="aiImage" alt=""></div>
       <p id="aiDescription"></p>
-      <div class="ai-facts"><div class="ai-fact"><strong id="aiPrice"></strong><span>السعر</span></div><div class="ai-fact"><strong id="aiImpact"></strong><span>نقطة أثر</span></div><div class="ai-fact"><strong id="aiWaste"></strong><span>هدر تم تجنبه</span></div></div>
-      <div class="ai-suggestion" id="aiSuggestion"></div>
+      <div class="ai-facts"><div class="ai-fact"><strong id="aiPrice"></strong><span>السعر التجريبي</span></div><div class="ai-fact"><strong id="aiImpact"></strong><span>نقاط أثر تجريبية</span></div><div class="ai-fact"><strong id="aiWaste"></strong><span>هدر متجنب تقديريًا</span></div></div>
+      <div class="ai-suggestion" id="aiSuggestion">بيانات الصنف من المنيو التجريبي. لا تمثل مخزونًا مباشرًا أو قياسًا فعليًا للأثر.</div>
       <div class="ai-actions"><button class="ai-add" id="aiAdd" type="button">ضيفها للسلة</button><button class="ai-close" id="aiCloseAction" type="button">رجوع للمنيو</button></div>
     </article>
   </div>
@@ -592,6 +727,43 @@
       </form>
     </div>
   </div>
+  <button class="chat-launcher" id="chatLauncher" type="button" aria-controls="chatPanel" aria-expanded="false">
+    <span class="chat-launcher-mark" aria-hidden="true">ك</span>
+    اسأل كاريزما
+  </button>
+  <section class="chat-panel" id="chatPanel" role="region" aria-label="محادثة مساعد كاريزما" hidden>
+    <header class="chat-header">
+      <div class="chat-title"><span class="chat-title-mark" aria-hidden="true">ك</span><div><h2>اسأل كاريزما</h2><p>مساعد الموقع التجريبي</p></div></div>
+      <button class="chat-close" id="chatClose" type="button" aria-label="إغلاق المحادثة">×</button>
+    </header>
+    <div class="chat-body">
+      <p class="chat-intro">اسأل عن المنيو أو المكافآت أو صفحات الموقع. الإجابات من معلومات النسخة التجريبية فقط.</p>
+      <div class="chat-transcript" id="chatTranscript" role="log" aria-live="polite" aria-relevant="additions text">
+        <div class="chat-message assistant" dir="auto">أهلًا! أقدر أشرح لك المنيو، نقاط الأثر التقديرية، المكافآت وصفحات الموقع.</div>
+      </div>
+      <div class="chat-status" id="chatStatus" role="status" aria-live="polite"></div>
+      <section class="impact-explorer" aria-labelledby="impactExplorerTitle">
+        <div class="impact-explorer-head"><h3 id="impactExplorerTitle">استكشف بيانات الأثر</h3><span class="impact-explorer-tag">من المنيو</span></div>
+        <p id="impactNote">اختار صنفًا لمشاهدة بياناته. الأثر والهدر تقديريان من بيانات المنيو، وليسا قياسًا مباشرًا أو مخزونًا حيًا.</p>
+        <div class="impact-explorer-controls">
+          <label for="impactPick" class="visually-hidden">اختيار صنف لعرض بيانات الأثر</label>
+          <select id="impactPick" aria-describedby="impactNote"><option value="">اختار صنفًا</option></select>
+        </div>
+        <div class="impact-card" id="impactCard" aria-live="polite" hidden>
+          <strong class="impact-card-name" id="impactCardName"></strong>
+          <span>السعر<strong id="impactCardPrice"></strong></span>
+          <span>نقاط أثر مسجلة<strong id="impactCardPoints"></strong></span>
+          <span>هدر متجنب تقديريًا<strong id="impactCardWaste"></strong></span>
+        </div>
+      </section>
+      <p class="chat-privacy" id="chatPrivacy">رسالتك وسياق قصير من المحادثة يُرسلان إلى Cloudflare Workers AI للإجابة. عنوان IP يستخدمه Worker لتحديد معدل الطلبات فقط. لا ترسل اسمًا أو بريدًا أو رقم هاتف أو كلمة مرور أو رقم/كود طلب أو كود أثر. المحادثة مؤقتة في هذه الصفحة ولا تُحفظ.</p>
+    </div>
+    <form class="chat-form" id="chatForm">
+      <label for="chatInput">سؤالك</label>
+      <input id="chatInput" name="question" type="text" maxlength="400" autocomplete="off" spellcheck="false" aria-describedby="chatPrivacy" required>
+      <button class="chat-send" id="chatSend" type="submit">إرسال</button>
+    </form>
+  </section>
 
   <script src="../../ai-config.js"></script>
   <script src="./menu-data.js"></script>
@@ -627,7 +799,7 @@
     }
     function renderMenu() {
       const visibleMenu = activeCategory === 'all' || activeCategory === 'offers' ? menu : menu.filter(item => item.category === activeCategory);
-      $('menuGrid').innerHTML = visibleMenu.map(item => `<article class="food-card" data-food="${item.id}" tabindex="0" role="button" aria-label="شرح ${item.name}"><div class="food-image"><img src="${item.image}" alt="${item.name}"><span>+${item.impact} نقطة أثر</span></div><div class="food-info"><h3>${item.name}</h3><p>${item.description}</p><div class="food-foot"><span class="price">${item.price} ج.م</span><button class="add-button" data-add="${item.id}">+ أضف للسلة</button></div></div></article>`).join('');
+      $('menuGrid').innerHTML = visibleMenu.map(item => `<article class="food-card" data-food="${item.id}" tabindex="0" role="button" aria-label="شرح ${item.name}"><div class="food-image"><img src="${item.image}" alt="${item.name}"><span>${item.impact} نقطة أثر تجريبية</span></div><div class="food-info"><h3>${item.name}</h3><p>${item.description}</p><div class="food-foot"><span class="price">${item.price} ج.م</span><button class="add-button" data-add="${item.id}">+ أضف للسلة</button></div></div></article>`).join('');
       const renderedCards = $('menuGrid').querySelectorAll('.food-card');
       if (revealObserver) renderedCards.forEach(card => revealObserver.observe(card));
       else renderedCards.forEach(card => card.classList.add('is-visible'));
@@ -674,7 +846,7 @@
       $('recommendText').textContent = rule.explain(item);
       $('recommendName').textContent = item.name;
       $('recommendPrice').textContent = `${item.price} ج.م`;
-      $('recommendImpact').textContent = `يوفر ${item.impact} نقطة أثر`;
+      $('recommendImpact').textContent = `${item.impact} نقطة أثر تجريبية`;
       $('recommendImage').src = item.image;
       $('recommendAdd').dataset.add = item.id;
     }
@@ -700,7 +872,7 @@
         $('recommendText').textContent = recommendation.reason;
         $('recommendName').textContent = item.name;
         $('recommendPrice').textContent = `${item.price} ج.م`;
-        $('recommendImpact').textContent = `يوفر ${item.impact} نقطة أثر`;
+        $('recommendImpact').textContent = `${item.impact} نقطة أثر تجريبية`;
         $('recommendImage').src = item.image;
         $('recommendAdd').dataset.add = item.id;
       } catch (error) {
@@ -739,12 +911,10 @@
       $('aiTitle').textContent = aiItem.name;
       $('aiImage').src = aiItem.image;
       $('aiImage').alt = aiItem.name;
-      $('aiDescription').textContent = `المساعد شايف إن ${aiItem.name} مناسب لو بتحب ${aiItem.description.replace(/[.،].*$/, '')}. الصنف متوازن بين الطعم والسعر، واختيارك له يضيف أثرًا واضحًا في حسابك.`;
+      $('aiDescription').textContent = `${aiItem.description} هذه بيانات المنيو التجريبي، ولا تتضمن معلومات عن المخزون الحالي.`;
       $('aiPrice').textContent = `${aiItem.price} ج.م`;
-      $('aiImpact').textContent = `+${aiItem.impact}`;
+      $('aiImpact').textContent = `${aiItem.impact}`;
       $('aiWaste').textContent = `${aiItem.waste} جم`;
-      const pairing = aiItem.id === 5 ? 'اقتراح المساعد: جرّبه مع كاريزما كلاسيك لو عايز وجبة كاملة.' : aiItem.id === 6 ? 'اقتراح المساعد: اختاره مع وجبة فيها تغليف أقل لتحصل على أثر أخف.' : 'اقتراح المساعد: أضف فرايز تشيدر للمشاركة، أو ليمون بالنعناع لو عايز توازن الوجبة.';
-      $('aiSuggestion').textContent = pairing;
       aiModal.classList.add('open');
       aiModal.setAttribute('aria-hidden', 'false');
     }
@@ -834,6 +1004,166 @@
     renderMenu();
     renderCart();
     renderAccountPoints();
+    const chatLauncher = $('chatLauncher');
+    const chatPanel = $('chatPanel');
+    const chatInput = $('chatInput');
+    const chatTranscript = $('chatTranscript');
+    const chatStatus = $('chatStatus');
+    const chatSend = $('chatSend');
+    const chatMessages = [];
+    let pendingChatMessages = null;
+    let pendingChatQuestion = '';
+    let chatBusy = false;
+    function setChatOpen(open) {
+      chatPanel.hidden = !open;
+      chatLauncher.setAttribute('aria-expanded', String(open));
+      if (open) chatInput.focus();
+      else chatLauncher.focus();
+    }
+    chatLauncher.addEventListener('click', () => setChatOpen(chatPanel.hidden));
+    $('chatClose').addEventListener('click', () => setChatOpen(false));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !chatPanel.hidden) setChatOpen(false);
+    });
+    function appendChatMessage(role, text) {
+      const message = document.createElement('div');
+      message.className = `chat-message ${role}`;
+      message.dir = 'auto';
+      message.textContent = text;
+      chatTranscript.append(message);
+      while (chatTranscript.children.length > 7) chatTranscript.children[1].remove();
+      $('chatPanel').querySelector('.chat-body').scrollTop = $('chatPanel').querySelector('.chat-body').scrollHeight;
+    }
+    function hasPrivateDetails(text) {
+      const normalized = text.replace(/[٠-٩۰-۹]/g, digit => {
+        const code = digit.charCodeAt(0);
+        return String.fromCharCode(48 + code - (code >= 1776 ? 1776 : 1632));
+      });
+      return /\b[\w.+-]+@[\w.-]+\.[A-Z]{2,}\b/i.test(normalized) ||
+        /(?:\+?\d)(?:[\s().-]*\d){8,}/.test(normalized) ||
+        /\b\d{6,}\b/.test(normalized) ||
+        /\b(?:CHR|SUP)-\d{4,}\b/i.test(normalized) ||
+        /\b(?:my name is|my email is|my phone(?: number)? is|my address is|my password is)\b/i.test(normalized) ||
+        /اسمي\s+[\p{L}]{2,}|(?:بريدي(?: الإلكتروني)?|رقم هاتفي|عنواني|كلمة مروري)\s*(?:هو|هي|:|=)/u.test(normalized) ||
+        /\b(?=[A-Z0-9]{6}\b)(?=[A-Z0-9]*[A-Z])(?=[A-Z0-9]*\d)[A-Z0-9]{6}\b/i.test(normalized);
+    }
+    function setChatStatus(message, retry = false) {
+      chatStatus.replaceChildren();
+      chatStatus.textContent = message;
+      if (retry) {
+        const button = document.createElement('button');
+        button.className = 'chat-retry';
+        button.type = 'button';
+        button.textContent = 'إعادة المحاولة';
+        button.addEventListener('click', () => sendChat(pendingChatMessages));
+        chatStatus.append(button);
+      }
+    }
+    function setChatLoading(loading) {
+      chatBusy = loading;
+      chatSend.disabled = loading;
+      chatInput.disabled = loading;
+      if (loading) {
+        chatStatus.replaceChildren();
+        const label = document.createElement('span');
+        label.textContent = 'جارٍ إعداد الإجابة...';
+        chatStatus.append(label);
+        const indicator = document.createElement('span');
+        indicator.className = 'chat-loading';
+        indicator.setAttribute('aria-hidden', 'true');
+        indicator.innerHTML = '<span></span><span></span><span></span>';
+        chatStatus.append(indicator);
+        chatStatus.setAttribute('aria-busy', 'true');
+      } else {
+        chatStatus.setAttribute('aria-busy', 'false');
+      }
+    }
+    async function sendChat(messages) {
+      const endpoint = window.CHARISMA_AI_CONFIG?.chatEndpoint;
+      if (!endpoint || !Array.isArray(messages) || chatBusy) {
+        setChatStatus('المساعد غير متاح حاليًا. جرّب لاحقًا.');
+        return;
+      }
+      pendingChatMessages = messages;
+      setChatLoading(true);
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages })
+        });
+        if (!response.ok) {
+          if (response.status === 429) throw new Error('وصلت لحد الاستخدام المؤقت. انتظر قليلًا ثم أعد المحاولة.');
+          if (response.status === 400) throw new Error('لم نرسل الرسالة لحماية خصوصيتك. احذف أي بيانات أو أكواد شخصية.');
+          throw new Error('تعذر الاتصال بالمساعد الآن. يمكنك إعادة المحاولة.');
+        }
+        const result = await response.json();
+        if (typeof result.answer !== 'string' || !result.answer.trim() || hasPrivateDetails(result.answer)) {
+          throw new Error('لم تصل إجابة آمنة للاستخدام. يمكنك إعادة المحاولة.');
+        }
+        appendChatMessage('assistant', result.answer.trim());
+        chatMessages.splice(0, chatMessages.length, ...messages, { role: 'assistant', content: result.answer.trim() });
+        while (chatMessages.length > 6) chatMessages.shift();
+        if (chatInput.value === pendingChatQuestion) chatInput.value = '';
+        pendingChatMessages = null;
+        pendingChatQuestion = '';
+        setChatStatus('تمت الإجابة من معلومات الموقع التجريبية.');
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'تعذر الاتصال بالمساعد الآن.';
+        setChatStatus(message, true);
+        if (!chatInput.value) chatInput.value = pendingChatQuestion;
+      } finally {
+        setChatLoading(false);
+      }
+    }
+    $('chatForm').addEventListener('submit', event => {
+      event.preventDefault();
+      if (chatBusy) return;
+      const question = chatInput.value.trim();
+      if (!question) return;
+      if (hasPrivateDetails(question)) {
+        setChatStatus('لا ترسل بيانات شخصية أو أرقام هواتف أو أكواد. لم نرسل رسالتك.');
+        return;
+      }
+      pendingChatQuestion = question;
+      const messages = [...chatMessages.slice(-2), { role: 'user', content: question }];
+      appendChatMessage('user', question);
+      chatInput.value = '';
+      setChatStatus('');
+      sendChat(messages);
+    });
+    const impactPick = $('impactPick');
+    const impactItems = menu.filter(item =>
+      item && typeof item.name === 'string' &&
+      Number.isFinite(item.price) &&
+      Number.isFinite(item.impact) &&
+      Number.isFinite(item.waste)
+    );
+    impactItems.forEach(item => {
+      const option = document.createElement('option');
+      option.value = String(item.id);
+      option.textContent = item.name;
+      impactPick.append(option);
+    });
+    function showImpactCard(item) {
+      if (!item) return;
+      $('impactCardName').textContent = item.name;
+      $('impactCardPrice').textContent = `${item.price} ج.م`;
+      $('impactCardPoints').textContent = `${item.impact} نقطة`;
+      $('impactCardWaste').textContent = `${item.waste} جم`;
+      const card = $('impactCard');
+      card.hidden = false;
+      card.classList.remove('reveal');
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        void card.offsetWidth;
+        card.classList.add('reveal');
+      }
+    }
+    impactPick.addEventListener('change', () => {
+      showImpactCard(impactItems.find(item => String(item.id) === impactPick.value));
+    });
+    impactPick.disabled = impactItems.length === 0;
     const revealTargets = document.querySelectorAll('.hero-copy, .hero-stage, .section, .food-card, .intent, .recommend-card, .impact-item');
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       revealTargets.forEach(target => target.classList.add('is-visible'));
